@@ -31,35 +31,35 @@ $sql = "DROP DATABASE IF EXISTS $db;
           preparation VARCHAR(1000),
           PRIMARY KEY (nom)
         );
-        CREATE TABLE Ingredient (
+        CREATE TABLE Ingredients (
           nomIngredient VARCHAR(100),
           PRIMARY KEY (nomIngredient)
         );
         CREATE TABLE Liaison (
-          nomIngredient VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
+          nomIngredient VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
           nomRecette VARCHAR(100) FOREIGN KEY (nom) REFERENCES Recette,
           PRIMARY KEY (nomIngredient, nomRecette)
         );
         CREATE TABLE SuperCategorie (
-          nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
-          nomSuper VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
+          nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
+          nomSuper VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
           PRIMARY KEY (nom, nomSuper)
         )";
 
 /*//////////////////////////////////////////////////////////////////////////////
 /       Recette                                                                /
 /   nom : Le nom du cocktail                                                   /
-/   ingredient : le texte des ingredients                                       /
+/   ingredient : le texte des ingredients                                      /
 /   preparation : Le texte de la préparation                                   /
 /                                                                              /
-/       Ingredient                                                             /
+/       Ingredients                                                             /
 /   nomIngredient : Le nom d'un ingredient (pour chaque ingredient utilisé)    /
 /                                                                              /
 /       Liaison                                                                /
 /   nomIngredient : Le nom d'un ingredient dans une recette                    /
 /   nomRecette : Le nom de la recette contenant l'ingredient                   /
 /                                                                              /
-/       SuperCategorie                                                          /
+/       SuperCategorie                                                         /
 /   nom : nom d'un ingredient ou d'une catégorie                               /
 /   nomSuper : nom de la catégorie englobant cet ingrédient                    /
 /                                                                              /
@@ -77,27 +77,25 @@ try{
 foreach (explode(';',$sql) as $requete) {
   $bdd->exec($requete);
 }
-
+/*Remplissage de la table Recette*/
 $stmt = $bdd->prepare("INSERT INTO Recette (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':ingredients', $ingredients);
 $stmt->bindParam(':preparation', $preparation);
 
 foreach ($Recettes as $titre) {
-
   $nom = array_values($titre)[0];
   $ingredients = array_values($titre)[1];
   $preparation = array_values($titre)[2];
-
   $stmt->execute();
 }
 
-/*$reponse = $bdd->query('SELECT * FROM Boissons');
-
-while ($donnees = $reponse->fetch()){
-  echo $donnees['nom'];
+/*Remplissage de la table Ingredient*/
+$stmt = $bdd->prepare("INSERT INTO Ingredients (nomIngredient) VALUES (:nom)");
+$stmt->bindParam(':nom', $nom);
+foreach ($Hierarchie as $key => $aliment) {
+    $nom = $key;
+    $stmt->execute();
 }
-
-$reponse->closeCursor();*/
 
 ?>
