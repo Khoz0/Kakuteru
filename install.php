@@ -17,13 +17,13 @@ $sql = "DROP DATABASE IF EXISTS $db;
           nom VARCHAR(100),
           prenom VARCHAR(100),
           login VARCHAR(100),
-          mdp VARCHAR(16),
+          mdp VARCHAR(16) NOT NULL,
           sexe VARCHAR(1),
           adresse VARCHAR(100),
           postal INT(5),
           ville VARCHAR(100),
           noTelephone INT(10),
-          PRIMARY KEY (login, mdp)
+          PRIMARY KEY (login)
         );
         CREATE TABLE Recette (
           nom VARCHAR(100),
@@ -36,13 +36,13 @@ $sql = "DROP DATABASE IF EXISTS $db;
           PRIMARY KEY (nomIngredient)
         );
         CREATE TABLE Liaison (
-          nomIngredient VARCHAR(100),
-          nomRecette VARCHAR(100),
+          nomIngredient VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
+          nomRecette VARCHAR(100) FOREIGN KEY (nom) REFERENCES Recette,
           PRIMARY KEY (nomIngredient, nomRecette)
         );
-        CREATE TABLE SousCategorie (
-          nom VARCHAR(100),
-          nomSuper VARCHAR(100),
+        CREATE TABLE SuperCategorie (
+          nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
+          nomSuper VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredient,
           PRIMARY KEY (nom, nomSuper)
         )";
 
@@ -59,7 +59,7 @@ $sql = "DROP DATABASE IF EXISTS $db;
 /   nomIngredient : Le nom d'un ingredient dans une recette                    /
 /   nomRecette : Le nom de la recette contenant l'ingredient                   /
 /                                                                              /
-/       SousCategorie                                                          /
+/       SuperCategorie                                                          /
 /   nom : nom d'un ingredient ou d'une catégorie                               /
 /   nomSuper : nom de la catégorie englobant cet ingrédient                    /
 /                                                                              /
