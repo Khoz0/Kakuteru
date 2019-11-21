@@ -92,12 +92,6 @@ foreach ($Recettes as $titre) {
   $stmt->execute();
 }
 
-/*$reponse = $bdd->query('SELECT * FROM Boissons');
 
-while ($donnees = $reponse->fetch()){
-  echo $donnees['nom'];
-}
-
-$reponse->closeCursor();*/
 
 ?>
