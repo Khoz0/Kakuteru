@@ -5,7 +5,7 @@ include "./Projet/Donnees.inc.php";
 define( 'DB_NAME', 'coming_soon' );
 $username = 'root';
 $pwd = '';
-$db = 'Kaketeru';
+$db = 'Kakuteru';
 
 // création de la requête sql
 // on teste avant si elle existe ou non (par sécurité)
@@ -36,9 +36,11 @@ $sql = "DROP DATABASE IF EXISTS $db;
           PRIMARY KEY (nomIngredient)
         );
         CREATE TABLE Liaison (
-          nomIngredient VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
-          nomRecette VARCHAR(100) FOREIGN KEY (nom) REFERENCES Recette,
-          PRIMARY KEY (nomIngredient, nomRecette)
+          nomIngredient VARCHAR(100),
+          nomRecette VARCHAR(100),
+          PRIMARY KEY (nomIngredient, nomRecette),
+          CONSTRAINT FK_LiaisonIngredient FOREIGN KEY (nomIngredient) REFERENCES Ingredients(nomIngredient),
+          CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES Recette(nom)
         );
         CREATE TABLE SuperCategorie (
           nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
@@ -90,12 +92,30 @@ foreach ($Recettes as $titre) {
   $stmt->execute();
 }
 
-/*Remplissage de la table Ingredient*/
+/*Remplissage de la table Ingredients*/
 $stmt = $bdd->prepare("INSERT INTO Ingredients (nomIngredient) VALUES (:nom)");
 $stmt->bindParam(':nom', $nom);
 foreach ($Hierarchie as $key => $aliment) {
     $nom = $key;
     $stmt->execute();
+}
+
+/*Remplissage de la table Liaison*/
+$stmt = $bdd->prepare("INSERT INTO Liaison (nomIngredient, nomRecette) VALUES (:nomIng, :nomRec)");
+$stmt->bindParam(':nomIng', $nomIng);
+$stmt->bindParam(':nomRec', $nomRec);
+foreach ($Recettes as $titre){
+    $nomRec = array_values($titre)[0];
+    foreach ($titre as $key => $value ){
+        if(is_array($value)) {
+            foreach ($value as $ing){
+                $nomIng = $ing;
+                $stmt->execute();
+            }
+        }
+    }
+    echo "</br>";
+    echo "</br>";
 }
 
 ?>
