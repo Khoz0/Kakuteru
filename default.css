@@ -261,7 +261,7 @@ ul.contact li a.icon-rss:before
 
 #wrapper
 {
-	background: #FFF;
+	background: #e3e3e3;
 }
 
 /*********************************************************************************/
@@ -270,7 +270,7 @@ ul.contact li a.icon-rss:before
 
 	#header-wrapper
 {
-	background: url(images/banner.jpg) no-repeat center;
+	background: url(images/banniere2.jpeg) no-repeat center;
 	background-size: cover;
 }
 
@@ -294,7 +294,7 @@ ul.contact li a.icon-rss:before
 	top: 0;
 	left: 0;
 	padding: 1.5em 2em;
-	background: #3498DB;
+	background: #777877;
 	border-radius: 0px 0px 5px 5px;
 }
 
@@ -319,7 +319,7 @@ ul.contact li a.icon-rss:before
 {
 	display: inline-block;
 	padding: 1em 0em;
-	background: #3498DB;
+	background: #777877;
 	border-radius: 5px;
 }
 
@@ -379,8 +379,9 @@ ul.contact li a.icon-rss:before
 	#page
 	{
 		padding-bottom: 5em;
+		background-color: #e3e3e3;
 	}
-	
+
 	#page h2
 	{
 		padding-bottom: 1.5em;
@@ -466,6 +467,7 @@ ul.contact li a.icon-rss:before
 #staff
 {
 	padding: 5em 0em;
+	background-color: #e3e3e3;
 }
 
 /*********************************************************************************/
