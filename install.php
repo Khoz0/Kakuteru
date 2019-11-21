@@ -49,7 +49,7 @@ $sql = "DROP DATABASE IF EXISTS $db;
 /*//////////////////////////////////////////////////////////////////////////////
 /       Recette                                                                /
 /   nom : Le nom du cocktail                                                   /
-/   ingrdient : le texte des ingredients                                       /
+/   ingredient : le texte des ingredients                                       /
 /   preparation : Le texte de la préparation                                   /
 /                                                                              /
 /       Ingredient                                                             /
@@ -69,15 +69,27 @@ $sql = "DROP DATABASE IF EXISTS $db;
 //////////////////////////////////////////////////////////////////////////////*/
 
 try{
-  $bdd = new PDO('mysql:host=localhost;$db;charset=utf8', 'root', '');
+  $bdd = new PDO('mysql:host=localhost;charset=utf8', 'root', '');
 }catch (Exception $e) {
   die('Erreur : ' . $e->getMessage());
 }
 
 foreach (explode(';',$sql) as $requete) {
-  if($requete != ""){
-    $bdd->exec($requete);
-  }
+  $bdd->exec($requete);
+}
+
+$stmt = $bdd->prepare("INSERT INTO Recette (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
+$stmt->bindParam(':nom', $nom);
+$stmt->bindParam(':ingredients', $ingredients);
+$stmt->bindParam(':preparation', $preparation);
+
+foreach ($Recettes as $titre) {
+
+  $nom = array_values($titre)[0];
+  $ingredients = array_values($titre)[1];
+  $preparation = array_values($titre)[2];
+
+  $stmt->execute();
 }
 
 /*$reponse = $bdd->query('SELECT * FROM Boissons');
