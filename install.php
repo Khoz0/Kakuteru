@@ -43,32 +43,12 @@ $sql = "DROP DATABASE IF EXISTS $db;
           CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES Recette(nom)
         );
         CREATE TABLE SuperCategorie (
-          nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
-          nomSuper VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
-          PRIMARY KEY (nom, nomSuper)
+          nom VARCHAR(100),
+          nomSuper VARCHAR(100),
+          PRIMARY KEY (nom, nomSuper),
+          CONSTRAINT FK_SuperCategorieNomCategorie FOREIGN KEY (nom) REFERENCES Ingredients(nomIngredient),
+          CONSTRAINT FK_SuperCategorieNomSuperCategorie FOREIGN KEY (nomSuper) REFERENCES Ingredients(nomIngredient)
         )";
-
-/*//////////////////////////////////////////////////////////////////////////////
-/       Recette                                                                /
-/   nom : Le nom du cocktail                                                   /
-/   ingredient : le texte des ingredients                                      /
-/   preparation : Le texte de la préparation                                   /
-/                                                                              /
-/       Ingredients                                                             /
-/   nomIngredient : Le nom d'un ingredient (pour chaque ingredient utilisé)    /
-/                                                                              /
-/       Liaison                                                                /
-/   nomIngredient : Le nom d'un ingredient dans une recette                    /
-/   nomRecette : Le nom de la recette contenant l'ingredient                   /
-/                                                                              /
-/       SuperCategorie                                                         /
-/   nom : nom d'un ingredient ou d'une catégorie                               /
-/   nomSuper : nom de la catégorie englobant cet ingrédient                    /
-/                                                                              /
-/   par exemple fruit est une catégorie ainsi qu'un ingredient                 /
-/   et jus de citron est une catégorie (vide) ainsi qu'un ingredient           /
-/                                                                              /
-//////////////////////////////////////////////////////////////////////////////*/
 
 try{
   $bdd = new PDO('mysql:host=localhost;charset=utf8', 'root', '');
@@ -114,8 +94,13 @@ foreach ($Recettes as $titre){
             }
         }
     }
-    echo "</br>";
-    echo "</br>";
+    /*echo "</br>";
+    echo "</br>";*/
 }
+
+/*Remplissage de la table SuperCategorie*/
+$stmt = $bdd->prepare("INSERT INTO SuperCategorie (nom, nomSuper) VALUES (:nom, :nomSuper)");
+$stmt->bindParam(':nom', $nom);
+$stmt->bindParam(':nomSuper', $nomSuper);
 
 ?>
