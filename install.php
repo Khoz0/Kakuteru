@@ -25,23 +25,27 @@ $sql = "DROP DATABASE IF EXISTS $db;
           noTelephone INT(10),
           PRIMARY KEY (login)
         );
-        CREATE TABLE Recette (
+
+        CREATE TABLE recettes (
           nom VARCHAR(100),
           ingredients VARCHAR(1000),
           preparation VARCHAR(1000),
           PRIMARY KEY (nom)
         );
+
         CREATE TABLE Ingredients (
           nomIngredient VARCHAR(100),
           PRIMARY KEY (nomIngredient)
         );
+
         CREATE TABLE Liaison (
           nomIngredient VARCHAR(100),
           nomRecette VARCHAR(100),
           PRIMARY KEY (nomIngredient, nomRecette),
           CONSTRAINT FK_LiaisonIngredient FOREIGN KEY (nomIngredient) REFERENCES Ingredients(nomIngredient),
-          CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES Recette(nom)
+          CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES recettes(nom)
         );
+
         CREATE TABLE SuperCategorie (
           nom VARCHAR(100),
           nomSuper VARCHAR(100),
@@ -59,8 +63,8 @@ try{
 foreach (explode(';',$sql) as $requete) {
   $bdd->exec($requete);
 }
-/*Remplissage de la table Recette*/
-$stmt = $bdd->prepare("INSERT INTO Recette (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
+/*Remplissage de la table recettes*/
+$stmt = $bdd->prepare("INSERT INTO recettes (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':ingredients', $ingredients);
 $stmt->bindParam(':preparation', $preparation);
@@ -94,13 +98,21 @@ foreach ($Recettes as $titre){
             }
         }
     }
-    /*echo "</br>";
-    echo "</br>";*/
 }
 
 /*Remplissage de la table SuperCategorie*/
 $stmt = $bdd->prepare("INSERT INTO SuperCategorie (nom, nomSuper) VALUES (:nom, :nomSuper)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':nomSuper', $nomSuper);
+foreach ($Hierarchie as $aliment => $tab){
+    if(array_key_exists('super-categorie', $tab)){
+        foreach ($tab['super-categorie'] as $super){
+            $nom = $aliment;
+            $nomSuper = $super;
+            $stmt->execute();
+        }
+    }
+}
+
 
 ?>
