@@ -26,7 +26,7 @@ $sql = "DROP DATABASE IF EXISTS $db;
           PRIMARY KEY (login)
         );
         
-        CREATE TABLE Recette (
+        CREATE TABLE recettes (
           nom VARCHAR(100),
           ingredients VARCHAR(1000),
           preparation VARCHAR(1000),
@@ -43,7 +43,7 @@ $sql = "DROP DATABASE IF EXISTS $db;
           nomRecette VARCHAR(100),
           PRIMARY KEY (nomIngredient, nomRecette),
           CONSTRAINT FK_LiaisonIngredient FOREIGN KEY (nomIngredient) REFERENCES Ingredients(nomIngredient),
-          CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES Recette(nom)
+          CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES recettes(nom)
         );
         
         CREATE TABLE SuperCategorie (
@@ -55,7 +55,7 @@ $sql = "DROP DATABASE IF EXISTS $db;
         )";
 
 /*//////////////////////////////////////////////////////////////////////////////
-/       Recette                                                                /
+/       recettes                                                                /
 /   nom : Le nom du cocktail                                                   /
 /   ingredient : le texte des ingredients                                      /
 /   preparation : Le texte de la préparation                                   /
@@ -85,8 +85,8 @@ try{
 foreach (explode(';',$sql) as $requete) {
   $bdd->exec($requete);
 }
-/*Remplissage de la table Recette*/
-$stmt = $bdd->prepare("INSERT INTO Recette (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
+/*Remplissage de la table recettes*/
+$stmt = $bdd->prepare("INSERT INTO recettes (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':ingredients', $ingredients);
 $stmt->bindParam(':preparation', $preparation);
