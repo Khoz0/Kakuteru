@@ -25,16 +25,19 @@ $sql = "DROP DATABASE IF EXISTS $db;
           noTelephone INT(10),
           PRIMARY KEY (login)
         );
+        
         CREATE TABLE Recette (
           nom VARCHAR(100),
           ingredients VARCHAR(1000),
           preparation VARCHAR(1000),
           PRIMARY KEY (nom)
         );
+        
         CREATE TABLE Ingredients (
           nomIngredient VARCHAR(100),
           PRIMARY KEY (nomIngredient)
         );
+        
         CREATE TABLE Liaison (
           nomIngredient VARCHAR(100),
           nomRecette VARCHAR(100),
@@ -42,10 +45,13 @@ $sql = "DROP DATABASE IF EXISTS $db;
           CONSTRAINT FK_LiaisonIngredient FOREIGN KEY (nomIngredient) REFERENCES Ingredients(nomIngredient),
           CONSTRAINT FK_LiaisonRecette FOREIGN KEY (nomRecette) REFERENCES Recette(nom)
         );
+        
         CREATE TABLE SuperCategorie (
-          nom VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
-          nomSuper VARCHAR(100) FOREIGN KEY (nomIngredient) REFERENCES Ingredients,
-          PRIMARY KEY (nom, nomSuper)
+          nom VARCHAR(100),
+          nomSuper VARCHAR(100),
+          PRIMARY KEY (nom, nomSuper),
+          CONSTRAINT FK_SuperCatNom FOREIGN KEY (nom) REFERENCES Ingredients(nomIngredient),
+          CONSTRAINT FK_SuperCatNomSuper FOREIGN KEY (nomSuper) REFERENCES Ingredients(nomIngredient)
         )";
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -114,8 +120,21 @@ foreach ($Recettes as $titre){
             }
         }
     }
-    echo "</br>";
-    echo "</br>";
 }
+
+/*Remplissage de la table SuperCategorie*/
+$stmt = $bdd->prepare("INSERT INTO SuperCategorie (nom, nomSuper) VALUES (:nom, :nomSuper)");
+$stmt->bindParam(':nom', $nom);
+$stmt->bindParam(':nomSuper', $nomSuper);
+foreach ($Hierarchie as $aliment => $tab){
+    if(array_key_exists('super-categorie', $tab)){
+        foreach ($tab['super-categorie'] as $super){
+            $nom = $aliment;
+            $nomSuper = $super;
+            $stmt->execute();
+        }
+    }
+}
+
 
 ?>
