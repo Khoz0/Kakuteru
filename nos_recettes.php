@@ -16,21 +16,21 @@
 <div id="header-wrapper">
     <div id="header" class="container">
         <div id="logo">
-            <h1><a href="./kakuteru.html">Kakuteru</a></h1>
+            <h1><a href="./kakuteru.php">Kakuteru</a></h1>
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="./kakuteru.html" accesskey="1" title="">Accueil</a></li>
+                <li class="active"><a href="./kakuteru.php" accesskey="1" title="">Accueil</a></li>
                 <li><a href="./nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="#" accesskey="3" title="">Nos recettes</a></li>
-                <li><a href="./mon_compte.html" accesskey="4" title="">Mon compte</a></li>
-                <li><a href="./A_propos.html" accesskey="5" title="">A propos de nous</a></li>
+                <li><a href="./mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+                <li><a href="./a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div id="wrapper">
-    <h2> SECTION NOS RECETTES</h2>
+    <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
     <?php
     try
     {
@@ -48,14 +48,18 @@
     // On affiche chaque entrée une à une
     while ($donnees = $recettes->fetch())
     {
+        $titre = $donnees['nom'];
+        $liaison = $bdd->prepare('SELECT nomIngredient FROM liaison WHERE nomRecette = :nomRecette');
+        $liaison->bindParam(':nomRecette', $titre);
+        $liaison->execute();
         ?>
         <p>
             <strong>Recette</strong> : <?php echo $donnees['nom']; ?><br />
-            Ingredients : <?php foreach (explode('|',$donnees['ingredients']) as $ing){
-                echo $ing.", ";
+            Ingredients : <?php while($liste = $liaison->fetch()){
+                echo $liste['nomIngredient'];
+                echo ", ";
             } ?><br />
-            Préparation : <?php echo $donnees['preparation'] ?><br />
-            </p>
+        </p>
         <?php
     }
 
@@ -64,7 +68,5 @@
 
     ?>
 </div>
-
-<p>bonjour</p>
 </body>
 </html>

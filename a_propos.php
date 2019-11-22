@@ -16,21 +16,22 @@
 <div id="header-wrapper">
 	<div id="header" class="container">
 		<div id="logo">
-			<h1><a href="./kakuteru.html">Kakuteru</a></h1>
+			<h1><a href="././kakuteru.php">Kakuteru</a></h1>
 		</div>
 		<div id="menu">
 			<ul>
-				<li class="active"><a href="./kakuteru.html" accesskey="1" title="">Accueil</a></li>
+				<li class="active"><a href="./kakuteru.php" accesskey="1" title="">Accueil</a></li>
 				<li><a href="./nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="./nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
-				<li><a href="#" accesskey="4" title="">Mon compte</a></li>
-				<li><a href="./A_propos.html" accesskey="5" title="">A propos de nous</a></li>
+				<li><a href="./mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+				<li><a href="#" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>
 	</div>
 </div>
 <div id="wrapper">
-	<h2> SECTION MON COMPTE</h2>
+	<h2> SECTION A PROPOS</h2>
 </div>
+
 </body>
 </html>
