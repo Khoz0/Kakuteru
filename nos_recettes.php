@@ -9,6 +9,41 @@
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
     <link href="default.css" rel="stylesheet" type="text/css" media="all" />
     <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+    <?php
+    if(isset($_POST['recherche'])){
+        echo $_POST['recherche'];
+    }
+    try
+    {
+        // On se connecte à MySQL
+        $bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
+    }
+    catch(Exception $e)
+    {
+        // En cas d'erreur, on affiche un message et on arrête tout
+        die('Erreur : '.$e->getMessage());
+    }
+    $ing = $bdd->query('SELECT * FROM ingredients');
+    $i = 0;
+    echo "<script>
+        function suggestion() {
+        alert('suggestion');
+            var text = document.getElementById('recherche');
+            var listSugg = document.getElementById('suggestion');
+            var sugg = select.getElementsByTagName('option');
+            for(var i = 0; i < sugg.length; ){
+                listSugg.removeChild(sugg[i]);
+            }";
+            while($donnees = $ing->fetch()){
+                echo "var option".$i." = document.createElement('option');
+                option".$i.".value = '".$i."';
+                option".$i.".text = 'ingredient';
+                listSugg.appendChild(option".$i.");";
+                $i++;
+        }
+
+    echo "}</script>";
+    ?>
 
 
 </head>
@@ -31,17 +66,12 @@
 </div>
 <div id="wrapper">
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
+    <form>
+        <input type="text" name="recherche" required="required" onkeyup="suggestion()"/>
+        <datalist id="suggestion">
+        </datalist>
+    </form>
     <?php
-    try
-    {
-        // On se connecte à MySQL
-        $bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
-    }
-    catch(Exception $e)
-    {
-        // En cas d'erreur, on affiche un message et on arrête tout
-        die('Erreur : '.$e->getMessage());
-    }
     // On récupère tout le contenu de la table jeux_video
     $recettes = $bdd->query('SELECT * FROM recettes');
 
