@@ -10,9 +10,6 @@
     <link href="default.css" rel="stylesheet" type="text/css" media="all" />
     <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
     <?php
-    if(isset($_POST['recherche'])){
-        echo $_POST['recherche'];
-    }
     try
     {
         // On se connecte à MySQL
@@ -23,27 +20,40 @@
         // En cas d'erreur, on affiche un message et on arrête tout
         die('Erreur : '.$e->getMessage());
     }
-    $ing = $bdd->query('SELECT * FROM ingredients');
-    $i = 0;
-    echo "<script>
-        function suggestion() {
-        alert('suggestion');
-            var text = document.getElementById('recherche');
-            var listSugg = document.getElementById('suggestion');
-            var sugg = select.getElementsByTagName('option');
-            for(var i = 0; i < sugg.length; ){
-                listSugg.removeChild(sugg[i]);
-            }";
-            while($donnees = $ing->fetch()){
-                echo "var option".$i." = document.createElement('option');
-                option".$i.".value = '".$i."';
-                option".$i.".text = 'ingredient';
-                listSugg.appendChild(option".$i.");";
-                $i++;
-        }
-
-    echo "}</script>";
     ?>
+    <script>
+        function suggestion(str) {
+            const listSugg = document.getElementById("suggestion");
+            if (str == "") {
+                var opts = select.getElementsByTagName('option');
+                for(var i = 0; i < opts.length; ){
+                    listSugg.removeChild(opts[i]);
+                }
+                return;
+            }
+            else {
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange = function() {
+                    str='';
+                    var liste = this.responseText.split("\n");
+                    for (var i=0; i < liste.length;++i){
+                        str += '<option value="'+liste[i]+'" />'; // Storing options in variable
+                    }
+                    listSugg.innerHTML = str;
+                };
+                xmlhttp.open("GET","getIng.php",true);
+                xmlhttp.send();
+
+            }
+        }
+    </script>
 
 
 </head>
