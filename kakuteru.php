@@ -57,6 +57,12 @@
           return ($newStr);
       }
 
+      function str_sansEspace_sansAppostrophe_sansAccent($str){
+          $sansEspaces = str_replace(' ', '_', $str);
+          $sansAppostrophe = str_replace("'", '', $sansEspaces);
+          return str_replace_accent($sansAppostrophe);
+      }
+
       try
       {
           // On se connecte à MySQL
@@ -69,8 +75,40 @@
       }
       // On récupère tout le contenu de la table jeux_video
       $recettes = $bdd->query('SELECT * FROM recettes');
+      $mojito = $bdd->query("SELECT * FROM recettes WHERE nom='Mojito'");
+      $sangriaSA = $bdd->query("SELECT * FROM recettes WHERE nom='Sangria sans alcool'");
+      $bora = $bdd->query("SELECT * FROM recettes WHERE nom='Bora bora'");
+      $dirImage = "Projet/Photos/";
+      if(is_dir($dirImage)){
+          if ($openedDir = opendir($dirImage)) {
+              if ($donnees = $mojito->fetch()) {
+                  $nomMojito = str_sansEspace_sansAppostrophe_sansAccent($donnees['nom']);
+              }
+              if ($donnees = $sangriaSA->fetch()) {
+                  $nomSangria = str_sansEspace_sansAppostrophe_sansAccent($donnees['nom']);
+              }
+              if ($donnees = $bora->fetch()){
+                  $nomBora = str_sansEspace_sansAppostrophe_sansAccent($donnees['nom']);
+              }
 
-      // On affiche chaque entrée une à une
+              while (($file = readdir($openedDir)) !== false) {
+                  if(strcasecmp($nomMojito.'.jpg', $file) == 0){ ?>
+                      <div class="boxA"><img src="<?= $dirImage.$file?>" height = "200" alt=""/></div>
+                  <?php
+                  }
+                  if(strcasecmp($nomSangria.'.jpg', $file) == 0){ ?>
+                    <div class="boxB"><img src="<?= $dirImage.$file?>" height = "200" alt=""/></div>
+                <?php
+                  }
+                  if (strcasecmp($nomBora. '.jpg', $file) == 0) { ?>
+                    <div class="boxC"><img src="<?= $dirImage . $file ?>" height="200" alt=""/></div>
+                    <?php
+                  }
+              }
+          }
+      }
+
+      /*// On affiche chaque entrée une à une
       while ($donnees = $recettes->fetch()){
       $sansEspaces = str_replace(' ', '_', $donnees['nom']);
       $sansAppostrophe = str_replace("'", '', $sansEspaces);
@@ -79,15 +117,12 @@
       if(is_dir($dirImage)){
         if ($openedDir = opendir($dirImage)) {
           while (($file = readdir($openedDir)) !== false) {
-            if(strcasecmp($nom.".jpg", "Mojito.jpg") == 0){
-
+            if(strcasecmp('Mojito.jpg', $file) == 0){
+            echo "Je vais afficher ".$file."</br>";
       ?>
 
-
-
-
-    		<div class="boxA"><img src="Projet\Photos\<?php echo $nom.".jpg"?>" height = "200" alt="" /></div>
-      <?php break;} ?>
+    		<div class="boxA"><img src="<?php echo $dirImage.$file?>" height = "200" alt="" /></div>
+      <?php } ?>
         <?php if(strcasecmp($nom.".jpg", "Sangria_sans_alcool.jpg") == 0){ ?>
     		<div class="boxB"><img src="Projet\Photos\<?php echo $nom.".jpg"?>" height = "200" alt="" /></div>
       <?php break;} ?>
@@ -99,7 +134,7 @@
     }
   }
 }
-?>
+*/?>
 	</div>
 	<div id="page" class="container">
 		<div class="boxA">
