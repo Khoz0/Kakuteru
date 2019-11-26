@@ -81,6 +81,7 @@
       $dirImage = "Projet/Photos/";
       if(is_dir($dirImage)){
           if ($openedDir = opendir($dirImage)) {
+              /*On récupère le résultat des requêtes*/
               if ($donnees = $mojito->fetch()) {
                   $nomMojito = str_sansEspace_sansAppostrophe_sansAccent($donnees['nom']);
               }
@@ -91,6 +92,7 @@
                   $nomBora = str_sansEspace_sansAppostrophe_sansAccent($donnees['nom']);
               }
 
+              /*Pour chaque image du dossier on regarde si on a une correspondance*/
               while (($file = readdir($openedDir)) !== false) {
                   if(strcasecmp($nomMojito.'.jpg', $file) == 0){ ?>
                       <div class="boxA"><img src="<?= $dirImage.$file?>" height = "200" alt=""/></div>
@@ -107,34 +109,7 @@
               }
           }
       }
-
-      /*// On affiche chaque entrée une à une
-      while ($donnees = $recettes->fetch()){
-      $sansEspaces = str_replace(' ', '_', $donnees['nom']);
-      $sansAppostrophe = str_replace("'", '', $sansEspaces);
-      $nom = str_replace_accent($sansAppostrophe);
-      $dirImage = "Projet/Photos/";
-      if(is_dir($dirImage)){
-        if ($openedDir = opendir($dirImage)) {
-          while (($file = readdir($openedDir)) !== false) {
-            if(strcasecmp('Mojito.jpg', $file) == 0){
-            echo "Je vais afficher ".$file."</br>";
-      ?>
-
-    		<div class="boxA"><img src="<?php echo $dirImage.$file?>" height = "200" alt="" /></div>
-      <?php } ?>
-        <?php if(strcasecmp($nom.".jpg", "Sangria_sans_alcool.jpg") == 0){ ?>
-    		<div class="boxB"><img src="Projet\Photos\<?php echo $nom.".jpg"?>" height = "200" alt="" /></div>
-      <?php break;} ?>
-        <?php if(strcasecmp($nom.".jpg", "Bora_bora.jpg") == 0){ ?>
-    		<div class="boxC"><img src="Projet\Photos\<?php echo $nom.".jpg"?>" height = "200" alt="" /></div>
-        <?php
-      break;}
-      }
-    }
-  }
-}
-*/?>
+?>
 	</div>
 	<div id="page" class="container">
 		<div class="boxA">
