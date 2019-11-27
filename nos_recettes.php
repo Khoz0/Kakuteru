@@ -41,14 +41,14 @@
                     xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
                 }
                 xmlhttp.onreadystatechange = function() {
-                    str='';
+                    var optionListe='';
                     var liste = this.responseText.split("\n");
                     for (var i=0; i < liste.length;++i){
-                        str += '<option value="'+liste[i]+'" />'; // Storing options in variable
+                        optionListe += "<option value=\""+liste[i]+"\" />\n"; // Storing options in variable
                     }
-                    listSugg.innerHTML = str;
+                    listSugg.innerHTML = optionListe;
                 };
-                xmlhttp.open("GET","getIng.php",true);
+                xmlhttp.open("GET","getIng.php?ing="+str,true);
                 xmlhttp.send();
 
             }
@@ -77,7 +77,7 @@
 <div id="wrapper">
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
     <form>
-        <input type="text" name="recherche" required="required" onkeyup="suggestion()"/>
+        <input type="text" list="suggestion" name="recherche" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
         <datalist id="suggestion">
         </datalist>
     </form>

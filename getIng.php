@@ -10,7 +10,8 @@ catch(Exception $e)
     die('Erreur : '.$e->getMessage());
 }
 
-$sql = "SELECT nomIngredient FROM ingredients";
+$ing = $_GET['ing'];
+$sql = "SELECT nomIngredient FROM ingredients WHERE nomIngredient LIKE '".$ing."%'";
 
 $stmt = $bdd->prepare($sql);
 $stmt->execute();

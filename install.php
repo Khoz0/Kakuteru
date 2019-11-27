@@ -9,8 +9,7 @@ $db = 'Kakuteru';
 
 // création de la requête sql
 // on teste avant si elle existe ou non (par sécurité)
-$sql = "DROP DATABASE IF EXISTS $db;
-        CREATE DATABASE $db;
+$sql = "CREATE DATABASE $db IF NOT EXISTS $db;
         ALTER DATABASE $db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         USE $db;
         CREATE TABLE Utilisateur (
