@@ -20,7 +20,31 @@
         // En cas d'erreur, on affiche un message et on arrête tout
         die('Erreur : '.$e->getMessage());
     }
+
+    function str_replace_cocktail($str)
+    {
+        $newStr = $str;
+        $newStr = preg_replace('#Ç#', 'C', $newStr);
+        $newStr = preg_replace('#ç#', 'c', $newStr);
+        $newStr = preg_replace('#è|é|ê|ë#', 'e', $newStr);
+        $newStr = preg_replace('#È|É|Ê|Ë#', 'E', $newStr);
+        $newStr = preg_replace('#à|á|â|ã|ä|å#', 'a', $newStr);
+        $newStr = preg_replace('#@|À|Á|Â|Ã|Ä|Å#', 'A', $newStr);
+        $newStr = preg_replace('#ì|í|î|ï#', 'i', $newStr);
+        $newStr = preg_replace('#Ì|Í|Î|Ï#', 'I', $newStr);
+        $newStr = preg_replace('#ð|ò|ó|ô|õ|ö#', 'o', $newStr);
+        $newStr = preg_replace('#Ò|Ó|Ô|Õ|Ö#', 'O', $newStr);
+        $newStr = preg_replace('#ù|ú|û|ü#', 'u', $newStr);
+        $newStr = preg_replace('#Ù|Ú|Û|Ü#', 'U', $newStr);
+        $newStr = preg_replace('#ý|ÿ#', 'y', $newStr);
+        $newStr = preg_replace('#Ý#', 'Y', $newStr);
+        $newStr = str_replace(' ', '_', $newStr);
+        $newStr = str_replace("'", '', $newStr);
+
+        return ($newStr);
+    }
     ?>
+
     <script>
         function suggestion(str) {
             const listSugg = document.getElementById("suggestion");
@@ -76,36 +100,68 @@
 </div>
 <div id="wrapper">
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
-    <form>
-        <input type="text" list="suggestion" name="recherche" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
+    <form method="post" action="#">
+        <input name="entreeUser" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
         <datalist id="suggestion">
         </datalist>
+        <input type="submit" name="Valider" value="Valider" />
     </form>
+
+
+    <!--<div id="wrapper">
+        <div id="staff" class="container">
+            <div class="title">
+                <h2>Quelques cocktails</h2>
+                <span>Voici une présentation de nos cocktails les plus populaires (classement basé sur on s'en fout c'est mon site)
+                </span>
+            </div>
+
+            <div class="boxA"><img src="" height = "200" alt=""/></div>
+            <div class="boxB"><img src="" height = "200" alt=""/></div>
+            <div class="boxC"><img src="" height="200" alt=""/></div>
+
+        </div>
+        <div id="page" class="container">
+            <div class="boxA">
+                <h2>Le mojito<br /></h2>
+                <p>Ca se prononce morito pas mo j to.</p>
+            </div>
+            <div class="boxB">
+                <h2>La sangria sans alcool<br /></h2>
+                <p>Sans alcool, la fête est plus folle!</p>
+            </div>
+            <div class="boxC">
+                <h2>Le bora bora<br /></h2>
+                <p>Bora-Bora est une petite île du Pacifique sud, située au nord-ouest de Tahiti, en Polynésie française. Entourée d'îlots de sable, appelés "motus", et d'une eau turquoise protégée par un récif corallien, l'île est un haut lieu de la plongée sous-marine. C'est également une destination touristique prisée pour ses complexes de luxe, dont certains proposent des bungalows sur pilotis. Au centre de l'île s'élève le mont Otemanu, un volcan endormi culminant à 727 m.</p>
+            </div>
+        </div>
+    </div>-->
+
+
     <?php
-    // On récupère tout le contenu de la table jeux_video
-    $recettes = $bdd->query('SELECT * FROM recettes');
-
-    // On affiche chaque entrée une à une
-    while ($donnees = $recettes->fetch())
-    {
-        $titre = $donnees['nom'];
-        $liaison = $bdd->prepare('SELECT nomIngredient FROM liaison WHERE nomRecette = :nomRecette');
-        $liaison->bindParam(':nomRecette', $titre);
-        $liaison->execute();
-        ?>
-        <p>
-            <strong>Recette</strong> : <?php echo $donnees['nom']; ?><br />
-            Ingredients : <?php while($liste = $liaison->fetch()){
-                echo $liste['nomIngredient'];
+    if(isset($_POST['Valider'])) {
+    $recette = $bdd->prepare("SELECT nomRecette FROM liaison WHERE nomIngredient = :ing");
+    $ing = $_POST['entreeUser'];
+    $recette->bindParam(':ing', $ing);
+    $recette->execute();
+    $ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette")
+    ?>
+    <p>
+        <?php while ($donnees = $recette->fetch()) { ?>
+            <br><br><strong>Recette</strong> : <?= $donnees['nomRecette']; ?>
+            <br/>
+            Ingredients :<?php
+            $ingredients->bindParam(":recette", $donnees['nomRecette']);
+            $ingredients->execute();
+            while ($ing = $ingredients->fetch()) {
+                echo $ing['nomIngredient'];
                 echo ", ";
-            } ?><br />
-        </p>
-        <?php
-    }
+            }
+            echo "</p>";
+        }
+        }
 
-    $recettes->closeCursor(); // Termine le traitement de la requête
-    $liaison->closeCursor(); // Termine le traitement de la requête
-
+        $recette->closeCursor(); // Termine le traitement de la requête
     ?>
 </div>
 </body>
