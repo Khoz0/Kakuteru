@@ -38,6 +38,8 @@
         $newStr = preg_replace('#Ù|Ú|Û|Ü#', 'U', $newStr);
         $newStr = preg_replace('#ý|ÿ#', 'y', $newStr);
         $newStr = preg_replace('#Ý#', 'Y', $newStr);
+        $newStr = preg_replace('#ń|ǹ|ň|ñ#', 'n', $newStr);
+        $newStr = preg_replace('#Ñ|Ń|Ǹ|Ň|ň#', 'N', $newStr);
         $newStr = str_replace(' ', '_', $newStr);
         $newStr = str_replace("'", '', $newStr);
 
