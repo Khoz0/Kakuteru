@@ -108,60 +108,32 @@
     </form>
 
 
-    <!--<div id="wrapper">
-        <div id="staff" class="container">
-            <div class="title">
-                <h2>Quelques cocktails</h2>
-                <span>Voici une présentation de nos cocktails les plus populaires (classement basé sur on s'en fout c'est mon site)
-                </span>
-            </div>
-
-            <div class="boxA"><img src="" height = "200" alt=""/></div>
-            <div class="boxB"><img src="" height = "200" alt=""/></div>
-            <div class="boxC"><img src="" height="200" alt=""/></div>
-
-        </div>
-        <div id="page" class="container">
-            <div class="boxA">
-                <h2>Le mojito<br /></h2>
-                <p>Ca se prononce morito pas mo j to.</p>
-            </div>
-            <div class="boxB">
-                <h2>La sangria sans alcool<br /></h2>
-                <p>Sans alcool, la fête est plus folle!</p>
-            </div>
-            <div class="boxC">
-                <h2>Le bora bora<br /></h2>
-                <p>Bora-Bora est une petite île du Pacifique sud, située au nord-ouest de Tahiti, en Polynésie française. Entourée d'îlots de sable, appelés "motus", et d'une eau turquoise protégée par un récif corallien, l'île est un haut lieu de la plongée sous-marine. C'est également une destination touristique prisée pour ses complexes de luxe, dont certains proposent des bungalows sur pilotis. Au centre de l'île s'élève le mont Otemanu, un volcan endormi culminant à 727 m.</p>
-            </div>
-        </div>
-    </div>-->
-
-
     <?php
     if(isset($_POST['Valider'])) {
-    $recette = $bdd->prepare("SELECT nomRecette FROM liaison WHERE nomIngredient = :ing");
-    $ing = $_POST['entreeUser'];
-    $recette->bindParam(':ing', $ing);
-    $recette->execute();
-    $ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette")
-    ?>
-    <p>
-        <?php while ($donnees = $recette->fetch()) { ?>
-            <br><br><strong>Recette</strong> : <?= $donnees['nomRecette']; ?>
-            <br/>
-            Ingredients :<?php
-            $ingredients->bindParam(":recette", $donnees['nomRecette']);
-            $ingredients->execute();
-            while ($ing = $ingredients->fetch()) {
-                echo $ing['nomIngredient'];
-                echo ", ";
+        if (isset($_POST['entreeUser'])){
+            $recette = $bdd->prepare("SELECT nomRecette FROM liaison WHERE nomIngredient = :ing");
+            $ing = $_POST['entreeUser'];
+            $recette->bindParam(':ing', $ing);
+            $recette->execute();
+            $ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette")
+            ?>
+            <p>
+            <?php while ($donnees = $recette->fetch()) { ?>
+                    <br><br><strong>Recette</strong> : <?= $donnees['nomRecette']; ?>
+                    <br/>
+                    Ingredients :<?php
+                    $ingredients->bindParam(":recette", $donnees['nomRecette']);
+                    $ingredients->execute();
+                    while ($ing = $ingredients->fetch()) {
+                        echo $ing['nomIngredient'];
+                        echo ", ";
+                    }
+                echo "</p>";
+                }
             }
-            echo "</p>";
-        }
-        }
 
-        $recette->closeCursor(); // Termine le traitement de la requête
+            $recette->closeCursor(); // Termine le traitement de la requête
+        }
     ?>
 </div>
 </body>
