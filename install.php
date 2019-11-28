@@ -9,19 +9,19 @@ $db = 'Kakuteru';
 
 // création de la requête sql
 // on teste avant si elle existe ou non (par sécurité)
-$sql = "CREATE DATABASE $db IF NOT EXISTS $db;
+$sql = "CREATE DATABASE IF NOT EXISTS $db;
         ALTER DATABASE $db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         USE $db;
         CREATE TABLE Utilisateur (
-          nom VARCHAR(100),
-          prenom VARCHAR(100),
-          login VARCHAR(100),
+          nom VARCHAR(100) DEFAULT NULL,
+          prenom VARCHAR(100) DEFAULT NULL,
+          login VARCHAR(100) NOT NULL,
           mdp VARCHAR(16) NOT NULL,
-          sexe VARCHAR(1),
-          adresse VARCHAR(100),
-          postal INT(5),
-          ville VARCHAR(100),
-          noTelephone INT(10),
+          sexe VARCHAR(1) DEFAULT NULL,
+          adresse VARCHAR(100) DEFAULT NULL,
+          postal INT(5) DEFAULT NULL,
+          ville VARCHAR(100) DEFAULT NULL,
+          noTelephone INT(10) DEFAULT NULL,
           PRIMARY KEY (login)
         );
 
