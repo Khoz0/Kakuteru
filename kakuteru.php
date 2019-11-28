@@ -14,6 +14,27 @@
 </head>
 <body>
 <div id="header-wrapper">
+	<?php
+
+	try
+	{
+			// On se connecte à MySQL
+			$bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
+	}
+	catch(Exception $e)
+	{
+			// En cas d'erreur, on affiche un message et on arrête tout
+			die('Erreur : '.$e->getMessage());
+	}
+	session_start();
+	if (isset($_SESSION['mailVerification'])){
+	?>
+		<button onclick="window.location.href = 'inscription.php';" class="button" style=vertical-align:middle>Déconnexion</button>
+	<?php
+	}else{
+	?>
+		<button onclick="window.location.href = 'connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
+	<?php } ?>
 	<div id="header" class="container">
 		<div id="logo">
 			<h1><a href="#">Kakuteru</a></h1>
@@ -61,17 +82,6 @@
           $sansEspaces = str_replace(' ', '_', $str);
           $sansAppostrophe = str_replace("'", '', $sansEspaces);
           return str_replace_accent($sansAppostrophe);
-      }
-
-      try
-      {
-          // On se connecte à MySQL
-          $bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
-      }
-      catch(Exception $e)
-      {
-          // En cas d'erreur, on affiche un message et on arrête tout
-          die('Erreur : '.$e->getMessage());
       }
       // On récupère tout le contenu de la table jeux_video
       $recettes = $bdd->query('SELECT * FROM recettes');

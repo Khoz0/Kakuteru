@@ -53,6 +53,15 @@
 							// En cas d'erreur, on affiche un message et on arrête tout
 							die('Erreur : '.$e->getMessage());
 					}
+					// Démarrage ou restauration de la session
+				  session_start();
+				  // Réinitialisation du tableau de session
+				  // On le vide intégralement
+				  $_SESSION = array();
+				  // Destruction de la session
+				  session_destroy();
+				  // Destruction du tableau de session
+				  unset($_SESSION);
 					if (isset($_POST["submit"])){
 
 						$nom = "null";
