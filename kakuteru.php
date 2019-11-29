@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-
+<?php
+include("./Connexion/connexion.php");
+session_start();
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,10 +19,10 @@ include("./Connexion/connexion.php");
 </head>
 <body>
 <div id="header-wrapper">
-	<?php if (isset($_SESSION['mailVerification'])){
-		session_start();
+	<?php
+		if (isset($_SESSION['login'])){
 	?>
-		<button onclick="window.location.href = './Inscription/inscription.php';" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick = "location.href='./Deconnexion/deconnexion.php'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
@@ -34,7 +37,9 @@ include("./Connexion/connexion.php");
 				<li class="active"><a href="#" accesskey="1" title="">Accueil</a></li>
 				<li><a href="./Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="./Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
-				<li><a href="./mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+				<?php if (isset($_SESSION['login'])){ ?>
+				<li><a href="./Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+				<?php } ?>
 				<li><a href="./A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>

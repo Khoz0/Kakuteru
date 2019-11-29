@@ -37,15 +37,15 @@ session_start();
 				<li><a href="../Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
 				<?php if (isset($_SESSION['login'])){ ?>
-				<li><a href="../Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+				<li><a href="#" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
-				<li><a href="#" accesskey="5" title="">A propos de nous</a></li>
+				<li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>
 	</div>
 </div>
 <div id="wrapper">
-	<h2> SECTION A PROPOS</h2>
+	<h2> SECTION MON COMPTE</h2>
 </div>
 
 </body>

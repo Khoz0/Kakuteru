@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
-
 include("../Connexion/connexion.php");
+session_start();
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -17,6 +17,15 @@ include("../Connexion/connexion.php");
 </head>
 <body>
 <div id="header-wrapper">
+  <?php
+		if (isset($_SESSION['login'])){
+	?>
+		<button onclick = "location.href='../Deconnexion/deconnexion.php'" class="button" style=vertical-align:middle>Déconnexion</button>
+	<?php
+	}else{
+	?>
+		<button onclick="window.location.href = '../ConnexionSite/connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
+	<?php } ?>
     <div id="header" class="container">
         <div id="logo">
            <h1><a href="../kakuteru.php">Kakuteru</a></h1>
@@ -26,7 +35,9 @@ include("../Connexion/connexion.php");
                 <li class="active"><a href="../kakuteru.php" accesskey="1" title="">Accueil</a></li>
                 <li><a href="#" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
-                <li><a href="../mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+        				<?php if (isset($_SESSION['login'])){ ?>
+        				<li><a href="../Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+        				<?php } ?>
                 <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
         </div>

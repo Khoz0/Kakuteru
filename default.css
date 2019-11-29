@@ -173,34 +173,6 @@ ul.contact li a.icon-rss:before
 	background: #F2600B;
 }
 
-/*********************************************************************************/
-/* Button Style                                                                  */
-/*********************************************************************************/
-
-	.button
-{
-	display: inline-block;
-	padding: 1em 3em 1em 2em;
-	letter-spacing: 0.20em;
-	text-decoration: none;
-	text-transform: uppercase;
-	font-weight: 400;
-	font-size: 0.90em;
-	color: #FFF;
-}
-
-.button:before
-{
-	display: inline-block;
-	background: #FFC31F;
-	margin-right: 1em;
-	width: 40px;
-	height: 40px;
-	line-height: 40px;
-	border-radius: 20px;
-	text-align: center;
-	color: #272925;
-}
 
 /*********************************************************************************/
 /* 4-column                                                                      */
@@ -672,19 +644,19 @@ input[type=submit] {
 
 
 /****************************************************************/
-/* Buouton                                                      */
+/* Bouton                                                      */
 /****************************************************************/
 
 .button {
   display: inline-block;
   border-radius: 4px;
-  background-color: #f4511e;
+  background-color: #777877;
   border: none;
   color: #FFFFFF;
   text-align: center;
   font-size: 20px;
   padding: 16px;
-  width: 200px;
+  width: 250px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
