@@ -1,6 +1,5 @@
 <?php
-
-include "./Projet/Donnees.inc.php";
+include("../Projet/Donnees.inc.php");
 
 define( 'DB_NAME', 'coming_soon' );
 $username = 'root';

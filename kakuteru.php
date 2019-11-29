@@ -9,31 +9,21 @@
 <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-
+<?php
+include("./Connexion/connexion.php");
+?>
 
 </head>
 <body>
 <div id="header-wrapper">
-	<?php
-
-	try
-	{
-			// On se connecte à MySQL
-			$bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
-	}
-	catch(Exception $e)
-	{
-			// En cas d'erreur, on affiche un message et on arrête tout
-			die('Erreur : '.$e->getMessage());
-	}
-	session_start();
-	if (isset($_SESSION['mailVerification'])){
+	<?php if (isset($_SESSION['mailVerification'])){
+		session_start();
 	?>
-		<button onclick="window.location.href = 'inscription.php';" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick="window.location.href = './Inscription/inscription.php';" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
-		<button onclick="window.location.href = 'connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
+		<button onclick="window.location.href = './ConnexionSite/connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
 	<div id="header" class="container">
 		<div id="logo">
@@ -42,10 +32,10 @@
 		<div id="menu">
 			<ul>
 				<li class="active"><a href="#" accesskey="1" title="">Accueil</a></li>
-				<li><a href="./nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
-				<li><a href="./nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
+				<li><a href="./Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
+				<li><a href="./Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
 				<li><a href="./mon_compte.php" accesskey="4" title="">Mon compte</a></li>
-				<li><a href="./a_propos.php" accesskey="5" title="">A propos de nous</a></li>
+				<li><a href="./A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>
 	</div>
