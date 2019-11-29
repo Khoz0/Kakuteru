@@ -75,27 +75,31 @@ session_start();
 							<br>
 						<?php
 						}else{
-							$email = $_POST["email"];
-							$mdp = $_POST["mdp"];
-							$sexe = $_POST["sexe"];
+							if (strlen($_POST["mdp"]) <= 16){
+								$email = $_POST["email"];
+								$mdp = $_POST["mdp"];
+								$sexe = $_POST["sexe"];
 
-							if (!empty($_POST["nom"])){
-								$nom = $_POST["nom"];
-							}
-							if (!empty($_POST["prenom"])){
-								$prenom = $_POST["prenom"];
-							}
-							if(!empty($_POST["adresse"])){
-								$adresse = $_POST["adresse"];
-							}
-							if(!empty($_POST["postal"])){
-								$postal = $_POST["postal"];
-							}
-							if(!empty($_POST["ville"])){
-								$ville = $_POST["ville"];
-							}
-							if(!empty($_POST["telephone"])){
-								$telephone = $_POST["telephone"];
+								if (!empty($_POST["nom"])){
+									$nom = $_POST["nom"];
+								}
+								if (!empty($_POST["prenom"])){
+									$prenom = $_POST["prenom"];
+								}
+								if(!empty($_POST["adresse"])){
+									$adresse = $_POST["adresse"];
+								}
+								if(!empty($_POST["postal"])){
+									$postal = $_POST["postal"];
+								}
+								if(!empty($_POST["ville"])){
+									$ville = $_POST["ville"];
+								}
+								if(!empty($_POST["telephone"])){
+									$telephone = $_POST["telephone"];
+								}
+							}else{
+								?> <em>Le mot de passe doit contenir moins de 16 caractères<br><br></em><?php
 							}
 							$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, :mdp, :sexe, :adresse, :postal, :ville, :noTelephone)");
 							$stmt->bindParam(':nom', $nom);
@@ -110,9 +114,10 @@ session_start();
 							$stmt->execute();
 						}
 					}
+					//header("Location : ../kakuteru.php");
 					?>
 					<label for="email">Email <em>*</em></label>
-					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
+					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
 					<label for="mdp">Mot de passe <em>*</em></label>
 					<input name="mdp" required = ""><br>
 			  </fieldset>

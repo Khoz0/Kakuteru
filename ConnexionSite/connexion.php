@@ -58,11 +58,12 @@ include("../Connexion/connexion.php");
              if ($mdp == $_POST["mdp"]){
                session_start();
                $_SESSION['login'] = $mailVerification;
-               header("Location: ../kakuteru.php");             }
+               header("Location: ../kakuteru.php");
+						 }
            }
           ?>
           <label for="email">Email <em>*</em></label>
-					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
+					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
 					<label for="mdp">Mot de passe <em>*</em></label>
 					<input name="mdp" required = ""><br>
 			  </fieldset>
