@@ -68,7 +68,10 @@ include("../ConnexionBD/connexion.php");
                   <label for="mdp">Mot de passe <em>*</em></label>
                   <input type="password" name="mdp" required=""><br>
               <?php
-              if ($mdp != $_POST["mdp"]){
+              if ($mdp == ''){
+                  echo "<p class='error'>Email inconnu</p>";
+              }
+              elseif($mdp != $_POST["mdp"]){
                   echo "<p class='error'>Mot de passe incorrect</p>";
               }
 
