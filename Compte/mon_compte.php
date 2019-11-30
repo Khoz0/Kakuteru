@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include("../Connexion/connexion.php");
+include("../ConnexionBD/connexion.php");
 session_start();
 ?>
 

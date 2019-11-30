@@ -1,6 +1,6 @@
 <?php
 
-include("../Connexion/connexion.php");
+include("../ConnexionBD/connexion.php");
 
 $ing = $_GET['ing'];
 $sql = "SELECT nomIngredient FROM ingredients WHERE nomIngredient LIKE '".$ing."%'";

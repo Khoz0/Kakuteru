@@ -61,7 +61,7 @@ try{
 foreach (explode(';',$sql) as $requete) {
   $bdd->exec($requete);
 }
-/*Remplissage de la table recettes*/
+/*Remplissage de la table Recettes*/
 $stmt = $bdd->prepare("INSERT INTO recettes (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':ingredients', $ingredients);

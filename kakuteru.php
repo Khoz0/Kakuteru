@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include("./Connexion/connexion.php");
+include("./ConnexionBD/connexion.php");
 session_start();
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -13,7 +13,7 @@ session_start();
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
 <?php
-include("./Connexion/connexion.php");
+include("./ConnexionBD/connexion.php");
 ?>
 
 </head>

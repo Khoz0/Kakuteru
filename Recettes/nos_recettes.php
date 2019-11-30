@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include("../Connexion/connexion.php");
+include("../ConnexionBD/connexion.php");
 //include("../Fonctions/getIng.php");
 session_start();
 ?>
@@ -42,6 +42,8 @@ session_start();
     ?>
 
     <script>
+        var listeAjout = new Array();
+
         function suggestion(str) {
             const listSugg = document.getElementById("suggestion");
             if (str == "") {
@@ -72,6 +74,65 @@ session_start();
                 xmlhttp.send();
 
             }
+        }
+
+        function ajoutIng(str, idForm, id) {
+            /*Ajout de l'ingrédient à la liste des ajouts*/
+            if(listeAjout.indexOf(str) == -1) {
+                listeAjout.push(str);
+
+                var form = document.getElementById(idForm);
+                var bouton = document.getElementById(id);
+
+                var btn = document.createElement("BUTTON");
+                btn.setAttribute("id", "btnIng")
+                btn.innerHTML = str;
+
+                form.insertBefore(btn, bouton.nextSibling);
+            }
+        }
+
+        function afficheRecette() {
+            var str="";
+            var wrap = document.getElementById('wrap');
+
+            /*On ajoute tous les ingédients que l'on veut dans la requête*/
+            listeAjout.forEach(element => {
+                str+=element+" ";
+            });
+
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            var element = document.createElement("p");
+
+            xmlhttp.onreadystatechange = function() {
+                var liste = this.responseText.split("\n");
+                element.innerHTML = innerHTMLRecette(liste);
+                alert(element.innerHTML);
+                var form = document.getElementById("ajout");
+                wrap.insertBefore(element, form.nextSibling);
+            };
+            xmlhttp.open("GET","getRecette.php?ing="+str,true);
+            xmlhttp.send();
+        }
+
+        function innerHTMLRecette(liste){
+            var strP = "<br><br><strong>";
+            strP += "Recette</strong> : "+liste[0]+"<br>Ingredients : ";
+            for (var i=1; i < liste.length; ++i){
+                strP += liste[i];
+                if(i < liste.length-2){
+                    strP += ", ";
+                }
+            }
+            strP += "<br>";
+            return strP;
         }
     </script>
 
@@ -107,19 +168,32 @@ session_start();
 </div>
 <div id="wrapper">
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
-    <form method="post" action="#">
-        <input name="entreeUser" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
-        <datalist id="suggestion">
-        </datalist>
-        <input type="submit" name="Valider" value="Valider" />
-    </form>
+    <div class="formulaires">
+        <br>
+        <form id="ajout">
+            <legend>Ajoutez les ingrédients que vous souhaitez dans votre cocktail</legend>
+            <input id="ingVoulu" type="search" name="ingVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
+            <datalist id="suggestion">
+            </datalist>
+            <button id="validerAjout" name="Valider" onclick="ajoutIng(document.getElementById('ingVoulu').value, 'ajout', this.id), afficheRecette()">Valider</button>
+        </form>
+
+        <br>
+        <!--<form method="post" action="#">
+            <legend>Ajoutez les ingrédients que vous ne souhaitez pas dans votre cocktail</legend>
+            <input name="ingNonVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
+            <datalist id="suggestion">
+            </datalist>
+            <input type="submit" name="Valider" value="Valider" />
+        </form>-->
+    </div>
 
 
     <?php
     if(isset($_POST['Valider'])) {
-        if (isset($_POST['entreeUser'])){
+        if (isset($_POST['ingVoulu'])){
             $recette = $bdd->prepare("SELECT nomRecette FROM liaison WHERE nomIngredient = :ing");
-            $ing = $_POST['entreeUser'];
+            $ing = $_POST['ingVoulu'];
             $recette->bindParam(':ing', $ing);
             $recette->execute();
             $ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette")

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include("../Connexion/connexion.php");
+include("../ConnexionBD/connexion.php");
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -52,23 +52,30 @@ include("../Connexion/connexion.php");
             $mailVerification = $_POST['email'];
             $results->bindParam(':mailVerification', $mailVerification);
             $results->execute();
+            $mdp='';
             if ($donnees = $results->fetch()){
                $mdp = $donnees['mdp'];
              }
-             if ($mdp == $_POST["mdp"]){
-               session_start();
-               $_SESSION['login'] = $mailVerification;
-               header("Location: ../kakuteru.php");
-						 }
-           }
+             if ($mdp == $_POST["mdp"]) {
+                 session_start();
+                 $_SESSION['login'] = $mailVerification;
+                 header("Location: ../kakuteru.php");
+             }
           ?>
-          <label for="email">Email <em>*</em></label>
-					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
-					<label for="mdp">Mot de passe <em>*</em></label>
-					<input name="mdp" required = ""><br>
-			  </fieldset>
-			  <p><input name = "submit" type="submit" value="Connexion"></p>
-      </form>
+                  <label for="email">Email <em>*</em></label>
+                  <input name="email" type="email" placeholder="Email" required=""
+                         pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
+                  <label for="mdp">Mot de passe <em>*</em></label>
+                  <input type="password" name="mdp" required=""><br>
+              <?php
+              if ($mdp != $_POST["mdp"]){
+                  echo "<p class='error'>Mot de passe incorrect</p>";
+              }
+
+          }?>
+              </fieldset>
+                <p><input name="submit" type="submit" value="Connexion"></p>
+            </form>
     </div>
     <div class="boxA">
       <br><br><br>
