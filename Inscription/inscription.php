@@ -101,7 +101,7 @@ session_start();
 							}else{
 								?> <em>Le mot de passe doit contenir moins de 16 caractères<br><br></em><?php
 							}
-							$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, :mdp, :sexe, :adresse, :postal, :ville, :noTelephone)");
+							$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, SHA1(:mdp), :sexe, :adresse, :postal, :ville, :noTelephone)");
 							$stmt->bindParam(':nom', $nom);
 							$stmt->bindParam(':prenom', $prenom);
 							$stmt->bindParam(':login', $email);

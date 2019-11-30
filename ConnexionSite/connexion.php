@@ -46,36 +46,51 @@ include("../ConnexionBD/connexion.php");
 			<form method="post" action="./connexion.php">
 			  <fieldset>
 			    <legend>Information du compte</legend>
-          <?php
-          if (isset($_POST["submit"])){
-            $results = $bdd->prepare('SELECT mdp FROM Utilisateur where login = :mailVerification');
-            $mailVerification = $_POST['email'];
-            $results->bindParam(':mailVerification', $mailVerification);
-            $results->execute();
-            $mdp='';
-            if ($donnees = $results->fetch()){
-               $mdp = $donnees['mdp'];
-             }
-             if ($mdp == $_POST["mdp"]) {
-                 session_start();
-                 $_SESSION['login'] = $mailVerification;
-                 header("Location: ../kakuteru.php");
-             }
-          ?>
                   <label for="email">Email <em>*</em></label>
                   <input name="email" type="email" placeholder="Email" required=""
                          pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
                   <label for="mdp">Mot de passe <em>*</em></label>
                   <input type="password" name="mdp" required=""><br>
               <?php
-              if ($mdp == ''){
-                  echo "<p class='error'>Email inconnu</p>";
-              }
-              elseif($mdp != $_POST["mdp"]){
-                  echo "<p class='error'>Mot de passe incorrect</p>";
-              }
 
-          }?>
+              if (isset($_POST["submit"])) {
+                  $mdpVerification='';
+                  $verifMail = $bdd->prepare("SELECT mdp FROM Utilisateur where login = :mailVerification");
+                  $verifMdp = $bdd->prepare("SELECT login FROM Utilisateur where login = :mailVerification AND mdp = SHA1(:mdpVerification)");
+                  $reqMdp = $bdd->prepare("SELECT mdp FROM Utilisateur where login = :mailVerification");
+                  $shamdp = $bdd->prepare("SELECT SHA1(:mdp) AS mdp FROM Utilisateur");
+
+                  /*On test si le mail existe dans la base de données*/
+                  $mailVerification = $_POST['email'];
+                  $verifMail->bindParam(':mailVerification', $mailVerification);
+                  $verifMail->execute();
+
+                  if ($donnees = $verifMail->fetch()) {
+                      /*Le mail est dans la base de données*/
+
+                      /*On teste si le mot de passe associé  ce mail est celui qui est entré*/
+                      $verifMdp->bindParam(':mailVerification', $mailVerification);
+                      $verifMdp->bindParam(':mdpVerification', $_POST["mdp"]);
+                      $verifMdp->execute();
+
+                      if($donnees = $verifMdp->fetch()){
+                          /*Le mot de passe correspond*/
+                          session_start();
+                          $_SESSION['login'] = $mailVerification;
+                          header("Location: ../kakuteru.php");
+                      }
+                      else{
+                          /*Le mot de passe ne correspond pas au mail*/
+                          echo "<p class='error'>Mot de passe incorrect</p>";
+                      }
+                  }
+                  else{
+                      /*Le mail n'est pas dans la base de données*/
+                      echo "<p class='error'>Email inconnu</p>";
+                  }
+              }
+              ?>
+
               </fieldset>
                 <p><input name="submit" type="submit" value="Connexion"></p>
             </form>
