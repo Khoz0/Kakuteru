@@ -1,7 +1,9 @@
-<!DOCTYPE html>
 <?php
 include("../Connexion/connexion.php");
 ?>
+
+<!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -54,11 +56,15 @@ include("../Connexion/connexion.php");
             $results->execute();
             if ($donnees = $results->fetch()){
                $mdp = $donnees['mdp'];
-             }
+             }else{
+							 ?> <em>Mauvaise adresse mail entrée. </em><?php
+						 }
              if ($mdp == $_POST["mdp"]){
                session_start();
                $_SESSION['login'] = $mailVerification;
                header("Location: ../kakuteru.php");
+						 }else{
+							 ?> <em>Mauvais mot de passe entré. </em><?php
 						 }
            }
           ?>
