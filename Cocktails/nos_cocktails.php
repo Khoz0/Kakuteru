@@ -1,8 +1,10 @@
-<!DOCTYPE html>
 <?php
 include("../ConnexionBD/connexion.php");
 session_start();
 ?>
+
+<!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,6 +15,32 @@ session_start();
     <link href="../default.css" rel="stylesheet" type="text/css" media="all" />
     <link href="../fonts.css" rel="stylesheet" type="text/css" media="all" />
 
+    <script>
+    function createCookie(name,value,days) {
+    	if (days) {
+    		var date = new Date();
+    		date.setTime(date.getTime()+(days*24*60*60*1000));
+    		var expires = "; expires="+date.toGMTString();
+    	}
+    	else var expires = "";
+    	document.cookie = name+"="+value+expires+"; path=/";
+    }
+
+    function readCookie(name) {
+    	var nameEQ = name + "=";
+    	var ca = document.cookie.split(';');
+    	for(var i=0;i < ca.length;i++) {
+    		var c = ca[i];
+    		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    	}
+    	return null;
+    }
+
+    function eraseCookie(name) {
+    	createCookie(name,"",-1);
+    }
+    </script>
 
 </head>
 <body>
@@ -81,6 +109,7 @@ session_start();
     {
         ?>
         <div id="page" class="container">
+          <div class = "boxA">
             <h2><?php echo $donnees['nom']; ?></h2>
             <p><strong>Ingredients : </strong><?php foreach (explode('|',$donnees['ingredients']) as $ing){
                 echo $ing.", ";
@@ -103,6 +132,13 @@ session_start();
             }
             ?>
             </p>
+          </div>
+          <div class = "boxB">
+            <?php if (isset($_SESSION['login']) && !(isset($_COOKIE[$donnees['nom']]))){ //TODO Ajouter le cocktail à la liste des cocktails préférés (via un cookie surement)?>
+              <button class = "button" onclick="createCookie("<?= $donnees['nom']; ?>", 'favoris')">Ajouter à mes cocktails préférés</button>
+
+            <?php } ?>
+          </div>
         </div>
         <?php
     }

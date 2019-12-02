@@ -1,8 +1,9 @@
-<!DOCTYPE html>
 <?php
 include("../ConnexionBD/connexion.php");
 session_start();
 ?>
+
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -45,8 +46,27 @@ session_start();
 	</div>
 </div>
 <div id="wrapper">
-	<h2> SECTION MON COMPTE</h2>
+	<h2>
+	<?php
+	// TODO
+	// récuperer le nom dans la bdd et comparer si égale "null" alors
+	echo "Espace personnel du membre : ".$_SESSION['login'];
+	// sinon afficher le nom
+	?>
+	</h2>
+	<br><br>
+	<div id="page" class="container">
+		<div class="boxA">
+			<form class="" action="#" method="post">
+				<p>Email : <?php echo $_SESSION['login']; ?> </p>
+				<?php if (isset($_POST["submit"])){?>
+				<input name="email" type="email" placeholder="Nouvel email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
+				<?php } ?>
+				<br>
+				<p><input name = "submit" type="submit" value="Modifier Informations"></p>
+			</form>
+		</div>
+	</div>
 </div>
-
 </body>
 </html>
