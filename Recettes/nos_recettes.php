@@ -96,11 +96,20 @@ session_start();
 
         function afficheRecette() {
             var str="";
-            var wrap = document.getElementById('wrap');
+            var div = document.getElementById('listeCocktails');
 
-            /*On ajoute tous les ingédients que l'on veut dans la requête*/
+            /**/
+            div.childNodes.forEach(child =>{
+               child.remove();
+            });
+
+            /*On ajoute tous les ingrédients que l'on veut dans la requête*/
+            var i=0;
             listeAjout.forEach(element => {
-                str+=element+" ";
+                str+=element;
+                if(i<listeAjout.length-1){
+                    str+=" ";
+                }
             });
 
             if (window.XMLHttpRequest) {
@@ -114,26 +123,31 @@ session_start();
             var element = document.createElement("p");
 
             xmlhttp.onreadystatechange = function() {
-                var liste = this.responseText.split("\n");
-                element.innerHTML = innerHTMLRecette(liste);
-                alert(element.innerHTML);
-                var form = document.getElementById("ajout");
-                wrap.insertBefore(element, form.nextSibling);
+                if(this.readyState == 4){
+                    var liste = this.responseText.split("\n");
+                    element.innerHTML = innerHTMLRecette(liste);
+                    div.insertBefore(element, null);
+                }
             };
-            xmlhttp.open("GET","getRecette.php?ing="+str,true);
+            xmlhttp.open("GET","getRecette.php?ing="+str,false);
             xmlhttp.send();
         }
 
         function innerHTMLRecette(liste){
-            var strP = "<br><br><strong>";
-            strP += "Recette</strong> : "+liste[0]+"<br>Ingredients : ";
-            for (var i=1; i < liste.length; ++i){
-                strP += liste[i];
-                if(i < liste.length-2){
-                    strP += ", ";
+            var listeRecettes = String(liste).split("_");
+            var strP = "<br><br>";
+            var innerListe;
+            for(var j=0; j<listeRecettes.length-1; j++) {
+                innerListe = listeRecettes[j].split(",");
+                strP += "<strong>Recette</strong> : " + innerListe[0] + "<br>Ingredients : ";
+                for (var i = 1; i < innerListe.length; ++i) {
+                    strP += innerListe[i];
+                    if (i < innerListe.length - 2) {
+                        strP += ", ";
+                    }
                 }
+                strP += "<br>";
             }
-            strP += "<br>";
             return strP;
         }
     </script>
@@ -172,13 +186,14 @@ session_start();
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
     <div class="formulaires">
         <br>
-        <form id="ajout">
+        <!--<form id="ajout">-->
             <legend>Ajoutez les ingrédients que vous souhaitez dans votre cocktail</legend>
             <input id="ingVoulu" type="search" name="ingVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
             <datalist id="suggestion">
             </datalist>
             <button id="validerAjout" name="Valider" onclick="ajoutIng(document.getElementById('ingVoulu').value, 'ajout', this.id), afficheRecette()">Valider</button>
-        </form>
+        <div id="listeCocktails"></div>
+        <!--</form>-->
 
         <br>
         <!--<form method="post" action="#">

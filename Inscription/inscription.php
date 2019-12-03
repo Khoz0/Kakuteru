@@ -121,7 +121,7 @@ session_start();
 					<label for="email">Email <em>*</em></label>
 					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
 					<label for="mdp">Mot de passe <em>*</em></label>
-					<input name="mdp" required = ""><br>
+					<input name="mdp" type="password" required = ""><br>
 			  </fieldset>
 			  <fieldset>
 			    <legend>Information personnelles</legend>
@@ -143,7 +143,7 @@ session_start();
 					<input name="postal" pattern="[0-9]{5}"><br>
 					<label for="ville">Ville</label>
 					<input name="ville"><br>
-					<label for="telephone">Telephone</label>
+					<label for="telephone">Téléphone</label>
 					<input name="telephone" type="tel" placeholder="0xxxxxxxxx" pattern="0[3, 6, 9, 7, 2][0-9]{8}"><br>
 			  </fieldset>
 			  <p><input name = "submit" type="submit" value="Créer le compte"></p>

@@ -18,6 +18,7 @@ session_start();
 
 </head>
 <body>
+
 <div id="header-wrapper">
 	<?php
 	if (isset($_SESSION['login'])){

@@ -19,7 +19,7 @@ $sql .= "'".$listeIng[0]."'";
 foreach ($listeIng as $ing) {
     $next = next($listeIng);
     if(!$next == ""){
-        $sql .= " AND nomRecette IN ( SELECT nomRecette FROM 'liaison' WHERE nomIngredient = '".$next."'')";
+        $sql .= " AND nomRecette IN ( SELECT nomRecette FROM liaison WHERE nomIngredient = '".$next."')";
     }
 }
 
@@ -35,5 +35,6 @@ while ($donnees = $recette->fetch()) {
         print_r($ing['nomIngredient']);
         echo "\n";
     }
+    echo "_";
 }
 $recette->closeCursor(); // Termine le traitement de la requête
