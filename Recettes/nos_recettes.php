@@ -103,7 +103,7 @@ session_start();
             }
         }
         
-        function suppressionIng() {
+        function suppressionIng(str) {
             /*Ajout de l'ingrédient à la liste des suppressions*/
             if(listeSupp.indexOf(str) == -1) {
                 listeSupp.push(str);
@@ -136,12 +136,16 @@ session_start();
             div.innerHTML = "";
 
             /*On ajoute tous les ingrédients que l'on veut dans la requête*/
-            var i=0;
             listeAjout.forEach(element => {
-                str+=element;
-                if(i<listeAjout.length-1){
-                    str+=" ";
-                }
+                str+="["+element;
+            });
+
+            /*On ajoute tous les ingrédients que l'on ne veut pas dans la requête*/
+            if(listeSupp.length>0){
+                str+="[_";
+            }
+            listeSupp.forEach(element => {
+                str+="["+element;
             });
 
             if (window.XMLHttpRequest) {
@@ -156,11 +160,13 @@ session_start();
 
             xmlhttp.onreadystatechange = function() {
                 if(this.readyState == 4){
+                    alert(this.responseText);
                     var liste = this.responseText.split("\n");
                     element.innerHTML = innerHTMLRecette(liste);
                     div.insertBefore(element, null);
                 }
             };
+            alert(str);
             xmlhttp.open("GET","getRecette.php?ing="+str,false);
             xmlhttp.send();
         }
@@ -230,7 +236,7 @@ session_start();
         <input id="ingNonVoulu" type="search" name="ingNonVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
         <datalist id="suggestion">
         </datalist>
-        <button id="validerAjout" name="Valider" onclick="afficheRecette('ajout')">Valider</button>
+        <button id="validerAjout" name="Valider" onclick="afficheRecette('supp')">Valider</button>
         <div id="boutonsSuppressions"></div>
 
         

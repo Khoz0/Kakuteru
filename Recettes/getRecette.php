@@ -14,13 +14,23 @@ catch(Exception $e)
 $sql = "SELECT nomRecette FROM liaison WHERE nomIngredient = ";
 
 $listeIng = $_GET['ing'];
-$listeIng = explode(' ',$listeIng);
+$listeIng = explode('[',$listeIng);
+print_r($listeIng);
+$sql .= "'".$listeIng[1]."'";
+$not = 'non';
 
-$sql .= "'".$listeIng[0]."'";
 foreach ($listeIng as $ing) {
     $next = next($listeIng);
-    if(!$next == ""){
+    if($next != "" && $not=='non'){
         $sql .= " AND nomRecette IN ( SELECT nomRecette FROM liaison WHERE nomIngredient = '".$next."')";
+    }
+
+    if($next != "" && $not=='oui'){
+        $sql .= " AND nomRecette NOT IN ( SELECT nomRecette FROM liaison WHERE nomIngredient = '".$next."')";
+    }
+
+    if($next == "_"){
+        $not = 'oui';
     }
 }
 
