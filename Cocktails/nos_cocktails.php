@@ -106,11 +106,10 @@ session_start();
     $recettes = $bdd->query('SELECT * FROM recettes');
 
     // On affiche chaque entrée une à une
-    while ($donnees = $recettes->fetch())
-    {
+    while ($donnees = $recettes->fetch()) {
         ?>
         <div id="page" class="container">
-          <div class = "boxA">
+        <div class="boxA">
             <h2><?php echo $donnees['nom']; ?></h2>
             <p><strong>Ingredients : </strong><?php foreach (explode('|',$donnees['ingredients']) as $ing){
                 echo $ing.", ";
@@ -129,9 +128,7 @@ session_start();
                   <?php
                   }
                 }
-              }
-            }
-            ?>
+                ?>
             </p>
           </div>
           <div class = "boxB">
