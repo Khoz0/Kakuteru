@@ -15,6 +15,7 @@ $sql = "SELECT nomRecette FROM liaison WHERE nomIngredient = ";
 
 $listeIng = $_GET['ing'];
 $listeIng = explode(' ',$listeIng);
+
 $sql .= "'".$listeIng[0]."'";
 foreach ($listeIng as $ing) {
     $next = next($listeIng);

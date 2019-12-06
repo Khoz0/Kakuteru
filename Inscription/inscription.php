@@ -101,7 +101,7 @@ session_start();
 								if(!empty($_POST["telephone"])){
 									$telephone = $_POST["telephone"];
 								}
-								$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, :mdp, :sexe, :adresse, :postal, :ville, :noTelephone)");
+								$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, SHA1(:mdp), :sexe, :adresse, :postal, :ville, :noTelephone)");
 								$stmt->bindParam(':nom', $nom);
 								$stmt->bindParam(':prenom', $prenom);
 								$stmt->bindParam(':login', $email);
@@ -112,7 +112,7 @@ session_start();
 								$stmt->bindParam(':ville', $ville);
 								$stmt->bindParam(':noTelephone', $telephone);
 								$stmt->execute();
-                $_SESSION['login'] = $email;
+                                $_SESSION['login'] = $email;
 								if (isset($_SESSION['login'])){
 									header("Location: ../kakuteru.php");
 								}

@@ -106,94 +106,93 @@ session_start();
     $recettes = $bdd->query('SELECT * FROM recettes');
 
     // On affiche chaque entrée une à une
-    while ($donnees = $recettes->fetch())
-    {
+    while ($donnees = $recettes->fetch()) {
         ?>
         <div id="page" class="container">
-          <div class = "boxA">
+        <div class="boxA">
             <h2><?php echo $donnees['nom']; ?></h2>
-            <p><strong>Ingredients : </strong><?php foreach (explode('|',$donnees['ingredients']) as $ing){
-                echo $ing.", ";
-            } ?><br />
-            <strong>Préparation : </strong><?php echo $donnees['preparation'] ?><br />
-            <?php
-            $sansEspaces = str_replace(' ', '_', $donnees['nom']);
-            $sansAppostrophe = str_replace("'", '', $sansEspaces);
-            $nom = str_replace_accent($sansAppostrophe);
-            $dirImage = "Projet/Photos/";
-            if(is_dir($dirImage)){
-              if ($openedDir = opendir($dirImage)) {
-                while (($file = readdir($openedDir)) !== false) {
-                  if(strcasecmp($nom.".jpg", $file) == 0){
-                    ?><img src="Projet\Photos\<?php echo $nom.".jpg"?>" height = "200" alt="" />
-                  <?php
-                  }
+            <p><strong>Ingredients : </strong><?php foreach (explode('|', $donnees['ingredients']) as $ing) {
+                    echo $ing . ", ";
+                } ?><br/>
+                <strong>Préparation : </strong><?php echo $donnees['preparation'] ?><br/>
+                <?php
+                $sansEspaces = str_replace(' ', '_', $donnees['nom']);
+                $sansAppostrophe = str_replace("'", '', $sansEspaces);
+                $nom = str_replace_accent($sansAppostrophe);
+                $dirImage = "Projet/Photos/";
+                if (is_dir($dirImage)) {
+                    if ($openedDir = opendir($dirImage)) {
+                        while (($file = readdir($openedDir)) !== false) {
+                            if (strcasecmp($nom . ".jpg", $file) == 0) {
+                                ?><img src="Projet\Photos\<?php echo $nom . ".jpg" ?>" height="200" alt="" />
+                                <?php
+                            }
+                        }
+                    }
                 }
-              }
-            }
-            ?>
+                ?>
             </p>
-          </div>
-          <div class = "boxB">
-            <?php
-            $nomcocktail = $donnees['nom'];
-            $nomcocktail = str_replace(' ', '_', $nomcocktail);
-            $nomcocktail = str_replace('.', '', $nomcocktail);
-            $nomcocktail = str_replace("'", '', $nomcocktail);
-            $nomcocktail = str_replace_accent($nomcocktail);
-            if (!isset($_SESSION['login'])){
-              if(!isset($_COOKIE[$nomcocktail])) {
-                if (isset($_POST[$nomcocktail])){
-                  echo 'ajoute fav';
-                  setCookie($nomcocktail, 'favoris');
-                  header("Location: ./nos_cocktails");
-                }
-                ?>
-              <form method="post" action="./nos_cocktails.php">
-                <button class = "button"  name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
-              </form>
-              <?php
-              }else{ ?>
-                <?php
-                if (isset($_POST[$nomcocktail])){
-                  echo "retire fav";
-                  setCookie($nomcocktail, '', time() - 3600);
-                  header("Location: ./nos_cocktails");
-                }
-                ?>
-              <form method="post" action="./nos_cocktails.php">
-                <button class = "button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
-              </form>
-              <?php
-              }
-            }else{
-              if(!isset($_COOKIE[$nomcocktail])) {
-                if (isset($_POST[$nomcocktail])){
-                  echo 'ajoute fav';
-                  setCookie($nomcocktail, 'favoris');
-                  header("Location: ./nos_cocktails");
-                }
-                ?>
-              <form method="post" action="./nos_cocktails.php">
-                <button class = "button"  name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
-              </form>
-              <?php
-              }else{ ?>
-                <?php
-                if (isset($_POST[$nomcocktail])){
-                  echo "retire fav";
-                  setCookie($nomcocktail, '', time() - 3600);
-                  header("Location: ./nos_cocktails");
-                }
-                ?>
-              <form method="post" action="./nos_cocktails.php">
-                <button class = "button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
-              </form>
-            }
-            ?>
-          </div>
         </div>
+        <div class="boxB">
         <?php
+        $nomcocktail = $donnees['nom'];
+        $nomcocktail = str_replace(' ', '_', $nomcocktail);
+        $nomcocktail = str_replace('.', '', $nomcocktail);
+        $nomcocktail = str_replace("'", '', $nomcocktail);
+        $nomcocktail = str_replace_accent($nomcocktail);
+        if (!isset($_SESSION['login'])) {
+            if (!isset($_COOKIE[$nomcocktail])) {
+                if (isset($_POST[$nomcocktail])) {
+                    echo 'ajoute fav';
+                    setCookie($nomcocktail, 'favoris');
+                    header("Location: ./nos_cocktails");
+                }
+                ?>
+                <form method="post" action="./nos_cocktails.php">
+                    <button class="button" name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
+                </form>
+                <?php
+            } else { ?>
+                <?php
+                if (isset($_POST[$nomcocktail])) {
+                    echo "retire fav";
+                    setCookie($nomcocktail, '', time() - 3600);
+                    header("Location: ./nos_cocktails");
+                }
+                ?>
+                <form method="post" action="./nos_cocktails.php">
+                    <button class="button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
+                </form>
+                <?php
+            }
+        } else {
+            if (!isset($_COOKIE[$nomcocktail])) {
+                if (isset($_POST[$nomcocktail])) {
+                    echo 'ajoute fav';
+                    setCookie($nomcocktail, 'favoris');
+                    header("Location: ./nos_cocktails");
+                }
+                ?>
+                <form method="post" action="./nos_cocktails.php">
+                    <button class="button" name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
+                </form>
+                <?php
+            } else { ?>
+                <?php
+                if (isset($_POST[$nomcocktail])) {
+                    echo "retire fav";
+                    setCookie($nomcocktail, '', time() - 3600);
+                    header("Location: ./nos_cocktails");
+                }
+                ?>
+                <form method="post" action="./nos_cocktails.php">
+                    <button class="button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
+                </form>
+                </div>
+                </div>
+                <?php
+            }
+        }
     }
 
     $recettes->closeCursor(); // Termine le traitement de la requête

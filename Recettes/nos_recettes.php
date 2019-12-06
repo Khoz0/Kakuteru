@@ -45,6 +45,7 @@ session_start();
 
     <script>
         var listeAjout = new Array();
+        var listeSupp = new Array();
 
         function suggestion(str) {
             const listSugg = document.getElementById("suggestion");
@@ -78,30 +79,61 @@ session_start();
             }
         }
 
-        function ajoutIng(str, idForm, id) {
+        function deleteIngAjout(str){
+            listeAjout.splice(listeAjout.indexOf(str), 1);
+            afficheRecette();
+            var btn = document.getElementById(str);
+            btn.remove();
+        }
+
+        function ajoutIng(str) {
             /*Ajout de l'ingrédient à la liste des ajouts*/
             if(listeAjout.indexOf(str) == -1) {
                 listeAjout.push(str);
 
-                var form = document.getElementById(idForm);
-                var bouton = document.getElementById(id);
-
+                var form = document.getElementById('boutonsAjouts');
                 var btn = document.createElement("BUTTON");
-                btn.setAttribute("id", "btnIng")
-                btn.innerHTML = str;
 
-                form.insertBefore(btn, bouton.nextSibling);
+                btn.setAttribute("id", str);
+                btn.setAttribute("class", "btnAjout");
+                btn.setAttribute("onclick", "deleteIngAjout(this.id)");
+                btn.innerHTML = "<span>"+str+"</span>";
+
+                form.insertBefore(btn, null);
+            }
+        }
+        
+        function suppressionIng() {
+            /*Ajout de l'ingrédient à la liste des suppressions*/
+            if(listeSupp.indexOf(str) == -1) {
+                listeSupp.push(str);
+
+                var form = document.getElementById('boutonsSuppressions');
+                var btn = document.createElement("BUTTON");
+
+                btn.setAttribute("id", str);
+                btn.setAttribute("class", "btnSupp");
+                //btn.setAttribute("onclick", "deleteIngAjout(this.id)");
+                btn.innerHTML = "<span>"+str+"</span>";
+
+                form.insertBefore(btn, null);
             }
         }
 
-        function afficheRecette() {
+
+        function afficheRecette(cond) {
+            if(cond == 'ajout') {
+                ajoutIng(document.getElementById('ingVoulu').value);
+            }
+            else if(cond == 'supp'){
+                suppressionIng(document.getElementById('ingNonVoulu').value);
+            }
+
             var str="";
             var div = document.getElementById('listeCocktails');
 
             /**/
-            div.childNodes.forEach(child =>{
-               child.remove();
-            });
+            div.innerHTML = "";
 
             /*On ajoute tous les ingrédients que l'on veut dans la requête*/
             var i=0;
@@ -186,53 +218,25 @@ session_start();
     <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
     <div class="formulaires">
         <br>
-        <!--<form id="ajout">-->
-            <legend>Ajoutez les ingrédients que vous souhaitez dans votre cocktail</legend>
-            <input id="ingVoulu" type="search" name="ingVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
-            <datalist id="suggestion">
-            </datalist>
-            <button id="validerAjout" name="Valider" onclick="ajoutIng(document.getElementById('ingVoulu').value, 'ajout', this.id), afficheRecette()">Valider</button>
-        <div id="listeCocktails"></div>
-        <!--</form>-->
 
-        <br>
-        <!--<form method="post" action="#">
-            <legend>Ajoutez les ingrédients que vous ne souhaitez pas dans votre cocktail</legend>
-            <input name="ingNonVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
-            <datalist id="suggestion">
-            </datalist>
-            <input type="submit" name="Valider" value="Valider" />
-        </form>-->
+        <legend>Ajoutez les ingrédients que vous souhaitez dans votre cocktail</legend>
+        <input id="ingVoulu" type="search" name="ingVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
+        <datalist id="suggestion">
+        </datalist>
+        <button id="validerAjout" name="Valider" onclick="afficheRecette('ajout')">Valider</button>
+        <div id="boutonsAjouts"></div>
+        
+        <legend>Ajoutez les ingrédients que vous ne souhaitez pas dans votre cocktail</legend>
+        <input id="ingNonVoulu" type="search" name="ingNonVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
+        <datalist id="suggestion">
+        </datalist>
+        <button id="validerAjout" name="Valider" onclick="afficheRecette('ajout')">Valider</button>
+        <div id="boutonsSuppressions"></div>
+
+        
+        <div id="listeCocktails"></div>
     </div>
 
-
-    <?php
-    if(isset($_POST['Valider'])) {
-        if (isset($_POST['ingVoulu'])){
-            $recette = $bdd->prepare("SELECT nomRecette FROM liaison WHERE nomIngredient = :ing");
-            $ing = $_POST['ingVoulu'];
-            $recette->bindParam(':ing', $ing);
-            $recette->execute();
-            $ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette")
-            ?>
-            <p>
-            <?php while ($donnees = $recette->fetch()) { ?>
-                    <br><br><strong>Recette</strong> : <?= $donnees['nomRecette']; ?>
-                    <br/>
-                    Ingredients :<?php
-                    $ingredients->bindParam(":recette", $donnees['nomRecette']);
-                    $ingredients->execute();
-                    while ($ing = $ingredients->fetch()) {
-                        echo $ing['nomIngredient'];
-                        echo ", ";
-                    }
-                echo "</p>";
-                }
-            }
-
-            $recette->closeCursor(); // Termine le traitement de la requête
-        }
-    ?>
 </div>
 </body>
 </html>
