@@ -15,7 +15,7 @@ $sql = "CREATE DATABASE IF NOT EXISTS $db;
           nom VARCHAR(100) DEFAULT NULL,
           prenom VARCHAR(100) DEFAULT NULL,
           login VARCHAR(100) NOT NULL,
-          mdp VARCHAR(16) NOT NULL,
+          mdp CHAR(40) NOT NULL,
           sexe VARCHAR(1) DEFAULT NULL,
           adresse VARCHAR(100) DEFAULT NULL,
           postal INT(5) DEFAULT NULL,
@@ -61,7 +61,7 @@ try{
 foreach (explode(';',$sql) as $requete) {
   $bdd->exec($requete);
 }
-/*Remplissage de la table recettes*/
+/*Remplissage de la table Recettes*/
 $stmt = $bdd->prepare("INSERT INTO recettes (nom, ingredients, preparation) VALUES (:nom, :ingredients, :preparation)");
 $stmt->bindParam(':nom', $nom);
 $stmt->bindParam(':ingredients', $ingredients);
