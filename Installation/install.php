@@ -24,7 +24,7 @@ $sql = "CREATE DATABASE IF NOT EXISTS $db;
           PRIMARY KEY (login)
         );
 
-        CREATE TABLE recettes (
+        CREATE TABLE Recettes (
           nom VARCHAR(100),
           ingredients VARCHAR(1000),
           preparation VARCHAR(1000),
@@ -50,6 +50,14 @@ $sql = "CREATE DATABASE IF NOT EXISTS $db;
           PRIMARY KEY (nom, nomSuper),
           CONSTRAINT FK_SuperCategorieNomCategorie FOREIGN KEY (nom) REFERENCES Ingredients(nomIngredient),
           CONSTRAINT FK_SuperCategorieNomSuperCategorie FOREIGN KEY (nomSuper) REFERENCES Ingredients(nomIngredient)
+        );
+
+        CREATE TABLE Panier (
+          utilisateur VARCHAR(100),
+          recette VARCHAR(100),
+          PRIMARY KEY (utilisateur, recette),
+          CONSTRAINT FK_PanierUtilisateur FOREIGN KEY (utilisateur) REFERENCES Utilisateur(login),
+          CONSTRAINT FK_PanierRecette FOREIGN KEY (recette) REFERENCES Recettes(ingredients)
         )";
 
 try{
