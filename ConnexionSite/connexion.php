@@ -62,7 +62,7 @@ include("../Connexion/connexion.php");
              if ($mdp == $_POST["mdp"]){
                session_start();
                $_SESSION['login'] = $mailVerification;
-               header("Location: ../kakuteru.php");
+               header("Location: ../kakuteru");
 						 }else{
 							 ?> <em>Mauvais mot de passe entré. </em><?php
 						 }

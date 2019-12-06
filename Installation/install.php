@@ -20,7 +20,7 @@ $sql = "CREATE DATABASE IF NOT EXISTS $db;
           adresse VARCHAR(100) DEFAULT NULL,
           postal INT(5) DEFAULT NULL,
           ville VARCHAR(100) DEFAULT NULL,
-          noTelephone INT(10) DEFAULT NULL,
+          noTelephone CHAR(10) DEFAULT NULL,
           PRIMARY KEY (login)
         );
 

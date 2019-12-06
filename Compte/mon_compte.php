@@ -48,10 +48,17 @@ session_start();
 <div id="wrapper">
 	<h2>
 	<?php
-	// TODO
-	// récuperer le nom dans la bdd et comparer si égale "null" alors
-	echo "Espace personnel du membre : ".$_SESSION['login'];
-	// sinon afficher le nom
+	$requete = $bdd->prepare("SELECT * FROM Utilisateur WHERE login = :loginSession");
+	$loginSession = $_SESSION['login'];
+	$requete->bindParam('loginSession', $loginSession);
+	$requete->execute();
+	if($donnees = $requete->fetch()){
+		if ($donnees['nom'] != 'null'){
+			echo "Espace personnel du membre : ".$donnees['nom'];
+		}else{
+		echo "Espace personnel du membre : ".$_SESSION['login'];
+		}
+	}
 	?>
 	</h2>
 	<br><br>

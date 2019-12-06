@@ -21,8 +21,9 @@ session_start();
     		var date = new Date();
     		date.setTime(date.getTime()+(days*24*60*60*1000));
     		var expires = "; expires="+date.toGMTString();
-    	}
-    	else var expires = "";
+    	}else{
+        var expires = "";
+      }
     	document.cookie = name+"="+value+expires+"; path=/";
     }
 
@@ -101,7 +102,7 @@ session_start();
 
         return ($newStr);
     }
-    // On récupère tout le contenu de la table jeux_video
+    // On récupère tout le contenu de la table recettes
     $recettes = $bdd->query('SELECT * FROM recettes');
 
     // On affiche chaque entrée une à une
@@ -134,10 +135,62 @@ session_start();
             </p>
           </div>
           <div class = "boxB">
-            <?php if (isset($_SESSION['login']) && !(isset($_COOKIE[$donnees['nom']]))){ //TODO Ajouter le cocktail à la liste des cocktails préférés (via un cookie surement)?>
-              <button class = "button" onclick="createCookie("<?= $donnees['nom']; ?>", 'favoris')">Ajouter à mes cocktails préférés</button>
-
-            <?php } ?>
+            <?php
+            $nomcocktail = $donnees['nom'];
+            $nomcocktail = str_replace(' ', '_', $nomcocktail);
+            $nomcocktail = str_replace('.', '', $nomcocktail);
+            $nomcocktail = str_replace("'", '', $nomcocktail);
+            $nomcocktail = str_replace_accent($nomcocktail);
+            if (!isset($_SESSION['login'])){
+              if(!isset($_COOKIE[$nomcocktail])) {
+                if (isset($_POST[$nomcocktail])){
+                  echo 'ajoute fav';
+                  setCookie($nomcocktail, 'favoris');
+                  header("Location: ./nos_cocktails");
+                }
+                ?>
+              <form method="post" action="./nos_cocktails.php">
+                <button class = "button"  name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
+              </form>
+              <?php
+              }else{ ?>
+                <?php
+                if (isset($_POST[$nomcocktail])){
+                  echo "retire fav";
+                  setCookie($nomcocktail, '', time() - 3600);
+                  header("Location: ./nos_cocktails");
+                }
+                ?>
+              <form method="post" action="./nos_cocktails.php">
+                <button class = "button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
+              </form>
+              <?php
+              }
+            }else{
+              if(!isset($_COOKIE[$nomcocktail])) {
+                if (isset($_POST[$nomcocktail])){
+                  echo 'ajoute fav';
+                  setCookie($nomcocktail, 'favoris');
+                  header("Location: ./nos_cocktails");
+                }
+                ?>
+              <form method="post" action="./nos_cocktails.php">
+                <button class = "button"  name="<?= $nomcocktail ?>">Ajouter à mes cocktails préférés</button>
+              </form>
+              <?php
+              }else{ ?>
+                <?php
+                if (isset($_POST[$nomcocktail])){
+                  echo "retire fav";
+                  setCookie($nomcocktail, '', time() - 3600);
+                  header("Location: ./nos_cocktails");
+                }
+                ?>
+              <form method="post" action="./nos_cocktails.php">
+                <button class = "button" name="<?= $nomcocktail ?>">supprimer de mes cocktails préférés</button>
+              </form>
+            }
+            ?>
           </div>
         </div>
         <?php

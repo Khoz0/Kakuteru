@@ -45,6 +45,7 @@ session_start();
 		</div>
 	</div>
 </div>
+
 <div id="wrapper">
 	<div class="title">
 		<h2>Création du compte<br /></h2>
@@ -100,20 +101,25 @@ session_start();
 								if(!empty($_POST["telephone"])){
 									$telephone = $_POST["telephone"];
 								}
-							}else{
+								$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, :mdp, :sexe, :adresse, :postal, :ville, :noTelephone)");
+								$stmt->bindParam(':nom', $nom);
+								$stmt->bindParam(':prenom', $prenom);
+								$stmt->bindParam(':login', $email);
+								$stmt->bindParam(':mdp', $mdp);
+								$stmt->bindParam(':sexe', $sexe);
+								$stmt->bindParam(':adresse', $adresse);
+								$stmt->bindParam(':postal', $postal);
+								$stmt->bindParam(':ville', $ville);
+								$stmt->bindParam(':noTelephone', $telephone);
+								$stmt->execute();
+                $_SESSION['login'] = $email;
+								if (isset($_SESSION['login'])){
+									header("Location: ../kakuteru.php");
+								}
+							}
+							else{
 								?> <em>Le mot de passe doit contenir moins de 16 caractères<br><br></em><?php
 							}
-							$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, :mdp, :sexe, :adresse, :postal, :ville, :noTelephone)");
-							$stmt->bindParam(':nom', $nom);
-							$stmt->bindParam(':prenom', $prenom);
-							$stmt->bindParam(':login', $email);
-							$stmt->bindParam(':mdp', $mdp);
-							$stmt->bindParam(':sexe', $sexe);
-							$stmt->bindParam(':adresse', $adresse);
-							$stmt->bindParam(':postal', $postal);
-							$stmt->bindParam(':ville', $ville);
-							$stmt->bindParam(':noTelephone', $telephone);
-							$stmt->execute();
 						}
 					}
 					//header("Location : ../kakuteru.php");
