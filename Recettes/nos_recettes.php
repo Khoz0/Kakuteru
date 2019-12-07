@@ -81,24 +81,31 @@ session_start();
 
         function deleteIngAjout(str){
             listeAjout.splice(listeAjout.indexOf(str), 1);
-            afficheRecette();
+            afficheRecette("");
+            var btn = document.getElementById(str);
+            btn.remove();
+        }
+
+        function deleteIngSupp(str){
+            listeAjout.splice(listeSupp.indexOf(str), 1);
+            afficheRecette("");
             var btn = document.getElementById(str);
             btn.remove();
         }
 
         function ajoutIng(str) {
-            /*Ajout de l'ingrédient à la liste des ajouts*/
             if(listeAjout.indexOf(str) == -1) {
+                /*Ajout de l'ingrédient à la liste des ajouts*/
                 listeAjout.push(str);
 
+                /*Création du bouton*/
                 var form = document.getElementById('boutonsAjouts');
                 var btn = document.createElement("BUTTON");
-
                 btn.setAttribute("id", str);
+
                 btn.setAttribute("class", "btnAjout");
                 btn.setAttribute("onclick", "deleteIngAjout(this.id)");
                 btn.innerHTML = "<span>"+str+"</span>";
-
                 form.insertBefore(btn, null);
             }
         }
@@ -108,12 +115,13 @@ session_start();
             if(listeSupp.indexOf(str) == -1) {
                 listeSupp.push(str);
 
+                /*Création du bouton*/
                 var form = document.getElementById('boutonsSuppressions');
                 var btn = document.createElement("BUTTON");
 
                 btn.setAttribute("id", str);
                 btn.setAttribute("class", "btnSupp");
-                //btn.setAttribute("onclick", "deleteIngAjout(this.id)");
+                btn.setAttribute("onclick", "deleteIngSupp(this.id)");
                 btn.innerHTML = "<span>"+str+"</span>";
 
                 form.insertBefore(btn, null);
@@ -122,53 +130,73 @@ session_start();
 
 
         function afficheRecette(cond) {
-            if(cond == 'ajout') {
+            if (cond == 'ajout') {
                 ajoutIng(document.getElementById('ingVoulu').value);
-            }
-            else if(cond == 'supp'){
+            } else if (cond == 'supp') {
                 suppressionIng(document.getElementById('ingNonVoulu').value);
             }
 
-            var str="";
+            var str = "";
             var div = document.getElementById('listeCocktails');
 
-            /**/
+            /*On supprime tous les cocktails qui sont déjà affichés*/
             div.innerHTML = "";
 
-            /*On ajoute tous les ingrédients que l'on veut dans la requête*/
-            listeAjout.forEach(element => {
-                str+="["+element;
-            });
+            if (cond != "") {
+                var cpt = 0;
+                var strAjout = "";
+                var strSupp = "";
 
-            /*On ajoute tous les ingrédients que l'on ne veut pas dans la requête*/
-            if(listeSupp.length>0){
-                str+="[_";
-            }
-            listeSupp.forEach(element => {
-                str+="["+element;
-            });
+                /*On ajoute tous les ingrédients que l'on veut dans la requête*/
+                listeAjout.forEach(element => {
+                    strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                    if (cpt < listeAjout.length - 1) {
+                        strAjout += " AND ";
+                    }
+                    cpt += 1;
+                });
 
-            if (window.XMLHttpRequest) {
-                // code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp = new XMLHttpRequest();
-            }
-            else {
-                // code for IE6, IE5
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            var element = document.createElement("p");
+                /*On ajoute tous les ingrédients que l'on ne veut pas dans la requête*/
+                cpt = 0;
+                listeSupp.forEach(element => {
+                    //str+="["+element;
+                    strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                    if (cpt < listeSupp.length - 1) {
+                        strSupp += " AND ";
+                    }
+                    cpt += 1;
+                });
 
-            xmlhttp.onreadystatechange = function() {
-                if(this.readyState == 4){
-                    alert(this.responseText);
-                    var liste = this.responseText.split("\n");
-                    element.innerHTML = innerHTMLRecette(liste);
-                    div.insertBefore(element, null);
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
                 }
-            };
-            alert(str);
-            xmlhttp.open("GET","getRecette.php?ing="+str,false);
-            xmlhttp.send();
+                var element = document.createElement("p");
+
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        var liste = this.responseText.split("\n");
+                        element.innerHTML = innerHTMLRecette(liste);
+                        div.insertBefore(element, null);
+                    }
+                };
+
+                if (strAjout != "") {
+                    str += strAjout;
+                    if (strSupp != "") {
+                        str += " AND " + strSupp;
+                    }
+                } else {
+                    if (strSupp != "") {
+                        str += strSupp;
+                    }
+                }
+                xmlhttp.open("GET", "getRecette.php?ing=" + str, false);
+                xmlhttp.send();
+            }
         }
 
         function innerHTMLRecette(liste){

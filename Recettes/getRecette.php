@@ -11,28 +11,10 @@ catch(Exception $e)
     die('Erreur : '.$e->getMessage());
 }
 
-$sql = "SELECT nomRecette FROM liaison WHERE nomIngredient = ";
+$sql = "SELECT DISTINCT nomRecette FROM liaison WHERE ";
 
 $listeIng = $_GET['ing'];
-$listeIng = explode('[',$listeIng);
-print_r($listeIng);
-$sql .= "'".$listeIng[1]."'";
-$not = 'non';
-
-foreach ($listeIng as $ing) {
-    $next = next($listeIng);
-    if($next != "" && $not=='non'){
-        $sql .= " AND nomRecette IN ( SELECT nomRecette FROM liaison WHERE nomIngredient = '".$next."')";
-    }
-
-    if($next != "" && $not=='oui'){
-        $sql .= " AND nomRecette NOT IN ( SELECT nomRecette FROM liaison WHERE nomIngredient = '".$next."')";
-    }
-
-    if($next == "_"){
-        $not = 'oui';
-    }
-}
+$sql .= $listeIng;
 
 $recette = $bdd->prepare($sql);
 $recette->execute();
