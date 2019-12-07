@@ -26,14 +26,14 @@ unset($_SESSION);
 <div id="header-wrapper">
     <div id="header" class="container">
         <div id="logo">
-            <h1><a href="#">Kakuteru</a></h1>
+            <h1><a href="../kakuteru">Kakuteru</a></h1>
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="#" accesskey="1" title="">Accueil</a></li>
-                <li><a href="./Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
-                <li><a href="./Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
-                <li><a href="./A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
+                <li class="active"><a href="../kakuteru" accesskey="1" title="">Accueil</a></li>
+                <li><a href="../Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
+                <li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
+                <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
         </div>
     </div>
