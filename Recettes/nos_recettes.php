@@ -87,7 +87,7 @@ session_start();
         }
 
         function deleteIngSupp(str){
-            listeAjout.splice(listeSupp.indexOf(str), 1);
+            listeSupp.splice(listeSupp.indexOf(str), 1);
             afficheRecette("");
             var btn = document.getElementById(str);
             btn.remove();
@@ -142,61 +142,59 @@ session_start();
             /*On supprime tous les cocktails qui sont déjà affichés*/
             div.innerHTML = "";
 
-            if (cond != "") {
-                var cpt = 0;
-                var strAjout = "";
-                var strSupp = "";
+            var cpt = 0;
+            var strAjout = "";
+            var strSupp = "";
 
-                /*On ajoute tous les ingrédients que l'on veut dans la requête*/
-                listeAjout.forEach(element => {
-                    strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
-                    if (cpt < listeAjout.length - 1) {
-                        strAjout += " AND ";
-                    }
-                    cpt += 1;
-                });
-
-                /*On ajoute tous les ingrédients que l'on ne veut pas dans la requête*/
-                cpt = 0;
-                listeSupp.forEach(element => {
-                    //str+="["+element;
-                    strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
-                    if (cpt < listeSupp.length - 1) {
-                        strSupp += " AND ";
-                    }
-                    cpt += 1;
-                });
-
-                if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp = new XMLHttpRequest();
-                } else {
-                    // code for IE6, IE5
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            /*On ajoute tous les ingrédients que l'on veut dans la requête*/
+            listeAjout.forEach(element => {
+                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                if (cpt < listeAjout.length - 1) {
+                    strAjout += " AND ";
                 }
-                var element = document.createElement("p");
+                cpt += 1;
+            });
 
-                xmlhttp.onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        var liste = this.responseText.split("\n");
-                        element.innerHTML = innerHTMLRecette(liste);
-                        div.insertBefore(element, null);
-                    }
-                };
-
-                if (strAjout != "") {
-                    str += strAjout;
-                    if (strSupp != "") {
-                        str += " AND " + strSupp;
-                    }
-                } else {
-                    if (strSupp != "") {
-                        str += strSupp;
-                    }
+            /*On ajoute tous les ingrédients que l'on ne veut pas dans la requête*/
+            cpt = 0;
+            listeSupp.forEach(element => {
+                //str+="["+element;
+                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                if (cpt < listeSupp.length - 1) {
+                    strSupp += " AND ";
                 }
-                xmlhttp.open("GET", "getRecette.php?ing=" + str, false);
-                xmlhttp.send();
+                cpt += 1;
+            });
+
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
+            var element = document.createElement("p");
+
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    var liste = this.responseText.split("\n");
+                    element.innerHTML = innerHTMLRecette(liste);
+                    div.insertBefore(element, null);
+                }
+            };
+
+            if (strAjout != "") {
+                str += strAjout;
+                if (strSupp != "") {
+                    str += " AND " + strSupp;
+                }
+            } else {
+                if (strSupp != "") {
+                    str += strSupp;
+                }
+            }
+            xmlhttp.open("GET", "getRecette.php?ing=" + str, false);
+            xmlhttp.send();
         }
 
         function innerHTMLRecette(liste){
