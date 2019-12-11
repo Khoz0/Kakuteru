@@ -163,7 +163,7 @@ session_start();
                             <?php
                             if (isset($_POST[$nomcocktail])) {
                                 setCookie($nomcocktail, '', time() - 3600);
-                                header("Location: ./nos_cocktails");
+                                header("Location: ./");
                             }
                             ?>
                             <form method="post" action="index.php">
@@ -188,7 +188,7 @@ session_start();
                                 $stmt->bindParam(':recette', $donnees['ingredients']);
 
                                 $stmt->execute();
-                                header("Location: ./nos_cocktails");
+                                header("Location: ./");
                             } ?>
                             <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
@@ -202,7 +202,7 @@ session_start();
                                 $stmt->bindParam(':recette', $donnees['ingredients']);
 
                                 $stmt->execute();
-                                header("Location: ./nos_cocktails");
+                                header("Location: ./");
                             } ?>
                             <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">Ajouter à mes cocktails préférés
