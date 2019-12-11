@@ -1,6 +1,5 @@
 <?php
 include("../ConnexionBD/connexion.php");
-//include("../Fonctions/getIng.php");
 session_start();
 ?>
 
@@ -147,8 +146,9 @@ session_start();
             var strSupp = "";
 
             /*On ajoute tous les ingrédients que l'on veut dans la requête*/
+            cpt = 0;
             listeAjout.forEach(element => {
-                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeAjout.length - 1) {
                     strAjout += " AND ";
                 }
@@ -159,7 +159,7 @@ session_start();
             cpt = 0;
             listeSupp.forEach(element => {
                 //str+="["+element;
-                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeSupp.length - 1) {
                     strSupp += " AND ";
                 }
@@ -184,9 +184,9 @@ session_start();
             };
 
             if (strAjout != "") {
-                str += strAjout;
+                str += "(" + strAjout + ")";
                 if (strSupp != "") {
-                    str += " AND " + strSupp;
+                    str += " AND (" + strSupp + ")";
                 }
             } else {
                 if (strSupp != "") {
