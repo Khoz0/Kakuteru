@@ -1,5 +1,5 @@
 <?php
-include("../ConnexionBD/connexion.php");
+include("../ConnexionBD/index.php");
 ?>
 
 <!DOCTYPE html>
@@ -20,15 +20,15 @@ include("../ConnexionBD/connexion.php");
 <div id="header-wrapper">
 	<div id="header" class="container">
 		<div id="logo">
-			<h1><a href="../kakuteru.php">Kakuteru</a></h1>
+			<h1><a href="../">Kakuteru</a></h1>
 		</div>
 		<div id="menu">
 			<ul>
-				<li class="active"><a href="../kakuteru.php" accesskey="1" title="">Accueil</a></li>
-				<li><a href="../Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
-				<li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
+				<li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
+				<li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
+				<li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
 				<?php if (isset($_SESSION['login'])){ ?>
-				<li><a href="../Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
 				<li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
@@ -45,7 +45,7 @@ include("../ConnexionBD/connexion.php");
 			<p>Les champs comportant le symbole <em>*</em> sont <strong>obligatoire</strong>.</p>
 		</div>
 		<div class = "boxB">
-			<form method="post" action="./connexion.php">
+			<form method="post" action="index.php">
 			  <fieldset>
 			    <legend>Information du compte</legend>
                   <label for="email">Email <em>*</em></label>
@@ -79,7 +79,7 @@ include("../ConnexionBD/connexion.php");
                           /*Le mot de passe correspond*/
                           session_start();
                           $_SESSION['login'] = $mailVerification;
-                          header("Location: ../kakuteru.php");
+                          header("Location: ../");
                       }
                       else{
                           /*Le mot de passe ne correspond pas au mail*/
@@ -99,7 +99,7 @@ include("../ConnexionBD/connexion.php");
     </div>
     <div class="boxA">
       <br><br><br>
-			<p>Si vous n'êtes pas inscrit <a href="../Inscription/inscription.php"> cliquez ici </a>.</p>
+			<p>Si vous n'êtes pas inscrit <a href="../Inscription/"> cliquez ici </a>.</p>
 		</div>
   </div>
 </div>

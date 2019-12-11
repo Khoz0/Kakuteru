@@ -1,6 +1,5 @@
 <?php
-include("../ConnexionBD/connexion.php");
-//include("../Fonctions/getIng.php");
+include("../ConnexionBD/index.php");
 session_start();
 ?>
 
@@ -147,8 +146,9 @@ session_start();
             var strSupp = "";
 
             /*On ajoute tous les ingrédients que l'on veut dans la requête*/
+            cpt = 0;
             listeAjout.forEach(element => {
-                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeAjout.length - 1) {
                     strAjout += " AND ";
                 }
@@ -159,7 +159,7 @@ session_start();
             cpt = 0;
             listeSupp.forEach(element => {
                 //str+="["+element;
-                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = '" + element + "')";
+                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeSupp.length - 1) {
                     strSupp += " AND ";
                 }
@@ -184,9 +184,9 @@ session_start();
             };
 
             if (strAjout != "") {
-                str += strAjout;
+                str += "(" + strAjout + ")";
                 if (strSupp != "") {
-                    str += " AND " + strSupp;
+                    str += " AND (" + strSupp + ")";
                 }
             } else {
                 if (strSupp != "") {
@@ -223,23 +223,23 @@ session_start();
   <?php
 		if (isset($_SESSION['login'])){
 	?>
-		<button onclick = "location.href='../Deconnexion/deconnexion.php'" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick = "location.href='../Deconnexion/index.php'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
-		<button onclick="window.location.href = '../ConnexionSite/connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
+		<button onclick="window.location.href = '../ConnexionSite/index.php';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
     <div id="header" class="container">
         <div id="logo">
-            <h1><a href="../kakuteru.php">Kakuteru</a></h1>
+            <h1><a href="../index.php">Kakuteru</a></h1>
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="../kakuteru.php" accesskey="1" title="">Accueil</a></li>
-                <li><a href="../Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
+                <li class="active"><a href="../index.php" accesskey="1" title="">Accueil</a></li>
+                <li><a href="../Cocktails/index.php" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="#" accesskey="3" title="">Nos recettes</a></li>
         				<?php if (isset($_SESSION['login'])){ ?>
-        				<li><a href="../Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+        				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
         				<?php } ?>
                 <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
