@@ -1,5 +1,5 @@
 <?php
-include("../ConnexionBD/connexion.php");
+include("../ConnexionBD/index.php");
 session_start();
 ?>
 
@@ -49,23 +49,23 @@ session_start();
   <?php
 		if (isset($_SESSION['login'])){
 	?>
-		<button onclick = "location.href='../Deconnexion/deconnexion.php'" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
-		<button onclick="window.location.href = '../ConnexionSite/connexion.php';" class="button" style=vertical-align:middle>Connexion</button>
+		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
     <div id="header" class="container">
         <div id="logo">
-           <h1><a href="../kakuteru.php">Kakuteru</a></h1>
+           <h1><a href="../">Kakuteru</a></h1>
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="../kakuteru.php" accesskey="1" title="">Accueil</a></li>
+                <li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
                 <li><a href="#" accesskey="2" title="">Nos cocktails</a></li>
-                <li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
+                <li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
         				<?php if (isset($_SESSION['login'])){ ?>
-        				<li><a href="../Compte/mon_compte.php" accesskey="4" title="">Mon compte</a></li>
+        				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
         				<?php } ?>
                 <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
@@ -154,7 +154,7 @@ session_start();
                                 header("Location: ./nos_cocktails");
                             }
                             ?>
-                            <form method="post" action="./nos_cocktails.php">
+                            <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">Ajouter à mes cocktails préférés
                                 </button>
                             </form>
@@ -166,7 +166,7 @@ session_start();
                                 header("Location: ./nos_cocktails");
                             }
                             ?>
-                            <form method="post" action="./nos_cocktails.php">
+                            <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
                                 </button>
                             </form>
@@ -190,7 +190,7 @@ session_start();
                                 $stmt->execute();
                                 header("Location: ./nos_cocktails");
                             } ?>
-                            <form method="post" action="./nos_cocktails.php">
+                            <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
                                 </button>
                             </form>
@@ -204,7 +204,7 @@ session_start();
                                 $stmt->execute();
                                 header("Location: ./nos_cocktails");
                             } ?>
-                            <form method="post" action="./nos_cocktails.php">
+                            <form method="post" action="index.php">
                                 <button class="button" name="<?= $nomcocktail; ?>">Ajouter à mes cocktails préférés
                                 </button>
                             </form>

@@ -1,5 +1,5 @@
 <?php
-include("../ConnexionBD/connexion.php");
+include("../ConnexionBD/index.php");
 
 $sql = "SELECT DISTINCT nomRecette FROM liaison WHERE ";
 

@@ -31,8 +31,8 @@ unset($_SESSION);
         <div id="menu">
             <ul>
                 <li class="active"><a href="../kakuteru" accesskey="1" title="">Accueil</a></li>
-                <li><a href="../Cocktails/nos_cocktails.php" accesskey="2" title="">Nos cocktails</a></li>
-                <li><a href="../Recettes/nos_recettes.php" accesskey="3" title="">Nos recettes</a></li>
+                <li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
+                <li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
                 <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
         </div>
@@ -42,7 +42,7 @@ unset($_SESSION);
     <div id="staff" class="container">
         <div class="title">
             <h2>Déconnexion</h2>
-            <p>Vous êtes bien déconnecté. Pour revenir à la page d'accueil <a href="../kakuteru.php">cliquez ici</a></p> </div>
+            <p>Vous êtes bien déconnecté. Pour revenir à la page d'accueil <a href="../">cliquez ici</a></p> </div>
     </div>
 </div>
 
