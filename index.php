@@ -79,10 +79,10 @@ session_start();
           return str_replace_accent($sansAppostrophe);
       }
       // On récupère tout le contenu de la table jeux_video
-      $recettes = $bdd->query('SELECT * FROM recettes');
-      $mojito = $bdd->query("SELECT * FROM recettes WHERE nom='Mojito'");
-      $sangriaSA = $bdd->query("SELECT * FROM recettes WHERE nom='Sangria sans alcool'");
-      $bora = $bdd->query("SELECT * FROM recettes WHERE nom='Bora bora'");
+      $recettes = $bdd->query('SELECT * FROM Recettes');
+      $mojito = $bdd->query("SELECT * FROM Recettes WHERE nom='Mojito'");
+      $sangriaSA = $bdd->query("SELECT * FROM Recettes WHERE nom='Sangria sans alcool'");
+      $bora = $bdd->query("SELECT * FROM Recettes WHERE nom='Bora bora'");
       $dirImage = "Projet/Photos/";
       if(is_dir($dirImage)){
           if ($openedDir = opendir($dirImage)) {

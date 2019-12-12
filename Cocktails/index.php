@@ -95,7 +95,7 @@ session_start();
         return ($newStr);
     }
     // On récupère tout le contenu de la table recettes
-    $recettes = $bdd->query('SELECT * FROM recettes');
+    $recettes = $bdd->query('SELECT * FROM Recettes');
 
     // On affiche chaque entrée une à une
     while ($donnees = $recettes->fetch()) {
