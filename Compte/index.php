@@ -57,7 +57,7 @@ session_start();
 		if ($donnees['nom'] != 'null'){
 			echo "Espace personnel du membre : ".$donnees['nom'];
 		}else{
-		echo "Espace personnel du membre : ".$_SESSION['login'];
+		echo "Espace personnel du membre : ".$donnees['login'];
 		}
 	}
 	?>
@@ -66,12 +66,94 @@ session_start();
 	<div id="page" class="container">
 		<div class="boxA">
 			<form class="" action="#" method="post">
-				<p>Email : <?php echo $_SESSION['login']; ?> </p>
-				<?php if (isset($_POST["submit"])){?>
-				<input name="email" type="email" placeholder="Nouvel email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
-				<?php } ?>
+				<?php if (isset($_POST["validation"])){
+					if (isset($_POST['ancienMdp']) && !empty($_POST["ancienMdp"])){
+						if (isset($_POST['nouveauMdp']) && !empty($_POST["nouveauMdp"])){
+							if (isset($_POST['confirmationMdp']) && !empty($_POST["confirmationMdp"])){
+								echo "on est la";
+							}else{
+								echo "mdp confirmation manquant";
+							}
+						}else{
+								echo "nouveau mdp manquant";
+						}
+					}else{
+						echo "pas de modifications du mdp";
+					}
+				}else if (isset($_POST["modification"])){?>
+					<input name="email" type="email" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+" value=<?= $donnees['login'] ?>><br><br>
+					<?php if ($donnees['nom'] != "null"){ $nom = htmlspecialchars($donnees['nom'], ENT_QUOTES);?>
+						<input name="nom" value='<?= $nom ?>'><br><br>
+					<?php }else{ ?>
+						<input name="nom" placeholder="Nouveau nom" ><br><br>
+					<?php }
+					if ($donnees['prenom'] != "null"){ $prenom = htmlspecialchars($donnees['prenom'], ENT_QUOTES);?>
+						<input name="prenom" value='<?= $prenom ?>'><br><br>
+					<?php }else{ ?>
+						<input name="prenom" placeholder="Nouveau prenom"><br><br>
+					<?php } ?>
+					<select name="sexe">
+						<option value="default" name="bdd"><?= $donnees['sexe'] ?></option>
+						<option value="N" name="aucun">Non renseigné</option>
+						<option value="F" name="homme">Femme</option>
+						<option value="H" name="femme">Homme</option>
+					</select><br><br>
+					<?php
+					if ($donnees['adresse'] != "null"){ $adresse = htmlspecialchars($donnees['adresse'], ENT_QUOTES);?>
+						<input name="adresse" value='<?= $adresse ?>'><br><br>
+					<?php }else{ ?>
+						<input name="adresse" placeholder="Nouvelle adresse"><br><br>
+					<?php }
+					if ($donnees['postal'] != 0){ ?>
+						<input name="postal" pattern="[0-9]{5}" value=<?= $donnees['postal'] ?>><br><br>
+					<?php }else{ ?>
+						<input name="postal" placeholder="Nouveau code postal" pattern="[0-9]{5}"><br><br>
+					<?php }
+					if ($donnees['ville'] != "null"){ $ville = htmlspecialchars($donnees['ville'], ENT_QUOTES);?>
+						<input name="ville" value='<?= $ville ?>'><br><br>
+					<?php }else{ ?>
+						<input name="ville" placeholder="Nouvelle ville"><br><br>
+					<?php }
+					if ($donnees['noTelephone'] != 0){ ?>
+						<input name="telephone" type="tel" pattern="0[3, 6, 9, 7, 2][0-9]{8}" value=<?= $donnees['noTelephone'] ?>><br><br>
+					<?php }else{ ?>
+						<input name="telephone" type="tel" placeholder="0xxxxxxxxx" pattern="0[3, 6, 9, 7, 2][0-9]{8}"><br><br>
+					<?php } ?>
+					<br>
+					<input name="ancienMdp" type="password" placeholder="Ancien mot de passe"><br><br>
+					<input name="nouveauMdp" type="password" placeholder="Nouveau mot de passe"><br><br>
+					<input name="confirmationMdp" type="password" placeholder="Confirmation du nouveau mot de passe"><br><br>
+					<br>
+					<p><input name = "validation" type="submit" value="Enregistrer"></p>
+				<?php }else{ ?>
+					<p>Email : <?php echo $donnees['login']; ?> </p>
+					<p>Nom : <?php echo $donnees['nom']; ?> </p>
+					<p>Prenom : <?php echo $donnees['prenom']; ?> </p>
+					<p>Sexe : <?php echo $donnees['sexe']; ?> </p>
+					<p>Adresse : <br><?= $donnees['adresse'].' '.$donnees['postal'].' '.$donnees['ville']; ?></p>
+					<p>N° de téléphone : <?php echo $donnees['noTelephone']; ?> </p>
+					<p><input name = "modification" type="submit" value="Modifier Informations"></p>
+					<?php
+				}
+				?>
 				<br>
-				<p><input name = "submit" type="submit" value="Modifier Informations"></p>
+			</form>
+		</div>
+		<div class="boxC">
+			<form class="" action="#" method="post">
+				<p>Email : <?php echo $_SESSION['login']; ?> </p>
+				<?php if (isset($_POST["suppression"])){
+					$requete = $bdd->prepare("DELETE FROM Utilisateur WHERE login = :login");
+					$login = $_SESSION['login'];
+					$requete->bindParam('login', $login);
+					$requete->execute();
+					$_SESSION = array();
+					session_destroy();
+					unset($_SESSION);
+					header("Location: ../");
+				} ?>
+				<br>
+				<p><input name = "suppression" type="submit" value="Supprimer le compte"></p>
 			</form>
 		</div>
 	</div>

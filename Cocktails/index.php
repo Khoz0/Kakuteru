@@ -103,7 +103,7 @@ session_start();
         return ($newStr);
     }
     // On récupère tout le contenu de la table recettes
-    $recettes = $bdd->query('SELECT * FROM recettes');
+    $recettes = $bdd->query('SELECT * FROM Recettes');
 
     // On affiche chaque entrée une à une
     while ($donnees = $recettes->fetch()) {
@@ -145,8 +145,6 @@ session_start();
                     $recettecocktail = str_replace("'", '', $recettecocktail);
                     $recettecocktail = str_replace_accent($recettecocktail);
 
-                    $dansPanier = false;
-
                     if (!isset($_SESSION['login'])) {
                         if (!isset($_COOKIE[$nomcocktail])) {
                             if (isset($_POST[$nomcocktail])) {
@@ -167,23 +165,27 @@ session_start();
                             }
                             ?>
                             <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
+                                <button class="button" name="<?= $nomcocktail; ?>">Supprimer de mes cocktails préférés
                                 </button>
                             </form>
                             <?php
                         }
                     } else {
-                        $panier = $bdd->query('SELECT * FROM panier');
+                      echo "L'utilisateur est connecté";
+                        $dansPanier = 0;
+                        $panier = $bdd->query('SELECT * FROM Panier');
                         while ($element = $panier->fetch()) {
                             if ($element['recette'] == $donnees['ingredients']) {
                                 if ($element['utilisateur'] == $_SESSION['login']) {
-                                    $dansPanier = true;
+                                    $dansPanier = 1;
                                 }
                             }
                         }
-                        if ($dansPanier) {
-                            if (isset($_POST[$nomcocktail])) {
-                                $stmt = $bdd->prepare("DELETE FROM panier WHERE utilisateur = :utilisateur AND recette = :recette");
+                        print_r($dansPanier);
+                        if ($dansPanier==1) {
+                          echo "La recette est dans le panier";
+                            if (isset($_POST["supp".$nomcocktail])) {
+                                $stmt = $bdd->prepare("DELETE FROM Panier WHERE utilisateur = :utilisateur AND recette = :recette");
                                 $stmt->bindParam(':utilisateur', $_SESSION['login']);
                                 $stmt->bindParam(':recette', $donnees['ingredients']);
 
@@ -191,13 +193,14 @@ session_start();
                                 header("Location: ./");
                             } ?>
                             <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
+                                <button class="button" name="<?= "supp".$nomcocktail; ?>">Supprimer de mes cocktails préférés
                                 </button>
                             </form>
                             <?php
                         } else {
+                          echo "La recette n'est pas dans le panier";
                             if (isset($_POST[$nomcocktail])) {
-                                $stmt = $bdd->prepare("INSERT INTO panier(utilisateur, recette) VALUES (:utilisateur, :recette)");
+                                $stmt = $bdd->prepare("INSERT INTO Panier(utilisateur, recette) VALUES (:utilisateur, :recette)");
                                 $stmt->bindParam(':utilisateur', $_SESSION['login']);
                                 $stmt->bindParam(':recette', $donnees['ingredients']);
 

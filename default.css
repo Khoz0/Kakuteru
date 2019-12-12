@@ -219,7 +219,7 @@ ul.contact li a.icon-rss:before
 /* 3-column                                                                      */
 /*********************************************************************************/
 
-	.boxA,  .boxB,  .boxC, .boxD
+	.boxA,  .boxB,  .boxC
 {
 	width: 300px;
 }
@@ -238,6 +238,7 @@ ul.contact li a.icon-rss:before
 .boxD
 {
 	float: center;
+	width: 500px;
 }
 
 /*********************************************************************************/

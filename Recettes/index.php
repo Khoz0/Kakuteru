@@ -108,7 +108,7 @@ session_start();
                 form.insertBefore(btn, null);
             }
         }
-        
+
         function suppressionIng(str) {
             /*Ajout de l'ingrédient à la liste des suppressions*/
             if(listeSupp.indexOf(str) == -1) {
@@ -148,7 +148,7 @@ session_start();
             /*On ajoute tous les ingrédients que l'on veut dans la requête*/
             cpt = 0;
             listeAjout.forEach(element => {
-                strAjout += "nomRecette IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
+                strAjout += "nomRecette IN (SELECT nomRecette FROM Liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeAjout.length - 1) {
                     strAjout += " AND ";
                 }
@@ -159,7 +159,7 @@ session_start();
             cpt = 0;
             listeSupp.forEach(element => {
                 //str+="["+element;
-                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM liaison WHERE nomIngredient = \"" + element + "\")";
+                strSupp += "nomRecette NOT IN (SELECT nomRecette FROM Liaison WHERE nomIngredient = \"" + element + "\")";
                 if (cpt < listeSupp.length - 1) {
                     strSupp += " AND ";
                 }
@@ -223,11 +223,11 @@ session_start();
   <?php
 		if (isset($_SESSION['login'])){
 	?>
-		<button onclick = "location.href='../Deconnexion/index.php'" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
-		<button onclick="window.location.href = '../ConnexionSite/index.php';" class="button" style=vertical-align:middle>Connexion</button>
+		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
     <div id="header" class="container">
         <div id="logo">
@@ -235,8 +235,8 @@ session_start();
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="../index.php" accesskey="1" title="">Accueil</a></li>
-                <li><a href="../Cocktails/index.php" accesskey="2" title="">Nos cocktails</a></li>
+                <li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
+                <li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="#" accesskey="3" title="">Nos recettes</a></li>
         				<?php if (isset($_SESSION['login'])){ ?>
         				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
@@ -247,28 +247,36 @@ session_start();
     </div>
 </div>
 <div id="wrapper">
-    <h2> FUTUR TRUC JASON DEROULANT (elle était pas ouf j'avoue)</h2>
-    <div class="formulaires">
+  <div id="page" class="container">
+    <h2> Recherche des cocktails en fonction de vos envies</h2>
+    <div class="boxC">
+      <div id="listeCocktails"></div>
+      <br>
+    </div>
+    <div class = "boxA">
+      <div class="formulaires">
         <br>
-
         <legend>Ajoutez les ingrédients que vous souhaitez dans votre cocktail</legend>
         <input id="ingVoulu" type="search" name="ingVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
         <datalist id="suggestion">
         </datalist>
         <button id="validerAjout" name="Valider" onclick="afficheRecette('ajout')">Valider</button>
         <div id="boutonsAjouts"></div>
-        
+      </div>
+    </div>
+    <div class="boxB">
+      <div class="formulaires">
+        <br>
         <legend>Ajoutez les ingrédients que vous ne souhaitez pas dans votre cocktail</legend>
         <input id="ingNonVoulu" type="search" name="ingNonVoulu" type="text" list="suggestion" required="required" autocomplete="off" onkeyup="suggestion(this.value)"/>
         <datalist id="suggestion">
         </datalist>
         <button id="validerAjout" name="Valider" onclick="afficheRecette('supp')">Valider</button>
         <div id="boutonsSuppressions"></div>
-
-        
-        <div id="listeCocktails"></div>
+      </div>
     </div>
-
+    </div>
+  </div>
 </div>
 </body>
 </html>
