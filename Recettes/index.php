@@ -223,11 +223,11 @@ session_start();
   <?php
 		if (isset($_SESSION['login'])){
 	?>
-		<button onclick = "location.href='../Deconnexion/index.php'" class="button" style=vertical-align:middle>Déconnexion</button>
+		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
 	?>
-		<button onclick="window.location.href = '../ConnexionSite/index.php';" class="button" style=vertical-align:middle>Connexion</button>
+		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
     <div id="header" class="container">
         <div id="logo">
@@ -235,8 +235,8 @@ session_start();
         </div>
         <div id="menu">
             <ul>
-                <li class="active"><a href="../index.php" accesskey="1" title="">Accueil</a></li>
-                <li><a href="../Cocktails/index.php" accesskey="2" title="">Nos cocktails</a></li>
+                <li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
+                <li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="#" accesskey="3" title="">Nos recettes</a></li>
         				<?php if (isset($_SESSION['login'])){ ?>
         				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>

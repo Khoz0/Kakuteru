@@ -54,10 +54,10 @@ $sql = "CREATE DATABASE IF NOT EXISTS $db;
 
         CREATE TABLE Panier (
           utilisateur VARCHAR(100),
-          recette VARCHAR(100),
-          PRIMARY KEY (utilisateur, recette),
+          nomRecette VARCHAR(100),
+          PRIMARY KEY (utilisateur, nomRecette),
           CONSTRAINT FK_PanierUtilisateur FOREIGN KEY (utilisateur) REFERENCES Utilisateur(login),
-          CONSTRAINT FK_PanierRecette FOREIGN KEY (recette) REFERENCES Recettes(ingredients)
+          CONSTRAINT FK_PanierRecette FOREIGN KEY (nomRecette) REFERENCES Recettes(nom)
         )";
 
 try{

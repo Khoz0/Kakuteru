@@ -16,30 +16,19 @@ session_start();
     <link href="../fonts.css" rel="stylesheet" type="text/css" media="all" />
 
     <script>
-    function createCookie(name,value,days) {
-    	if (days) {
-    		var date = new Date();
-    		date.setTime(date.getTime()+(days*24*60*60*1000));
-    		var expires = "; expires="+date.toGMTString();
-    	}else{
-        var expires = "";
-      }
-    	document.cookie = name+"="+value+expires+"; path=/";
-    }
-
-    function readCookie(name) {
-    	var nameEQ = name + "=";
-    	var ca = document.cookie.split(';');
-    	for(var i=0;i < ca.length;i++) {
-    		var c = ca[i];
-    		while (c.charAt(0)==' ') c = c.substring(1,c.length);
-    		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    	}
-    	return null;
-    }
-
-    function eraseCookie(name) {
-    	createCookie(name,"",-1);
+    function ajoutRecette(user, recette){
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+        var str = user+"|"+recette;
+        xmlhttp.open("GET","addCocktail.php?p="+str,true);
+        xmlhttp.send();
+        document.location.href="./";
     }
     </script>
 
@@ -80,7 +69,7 @@ session_start();
 
     <?php
 
-    function str_replace_accent($str)
+    function str_replace_accent_espace($str)
     {
         $newStr = $str;
         $newStr = preg_replace('#Ç#', 'C', $newStr);
@@ -99,6 +88,9 @@ session_start();
         $newStr = preg_replace('#Ý#', 'Y', $newStr);
         $newStr = preg_replace('#ń|ǹ|ň|ñ#', 'n', $newStr);
         $newStr = preg_replace('#Ñ|Ń|Ǹ|Ň|ň#', 'N', $newStr);
+        $newStr = str_replace(' ', '_', $newStr);
+        $newStr = str_replace('.', '', $newStr);
+        $newStr = str_replace("'", '', $newStr);
 
         return ($newStr);
     }
@@ -116,9 +108,7 @@ session_start();
         } ?><br/>
         <strong>Préparation : </strong><?php echo $donnees['preparation'] ?><br/>
         <?php
-        $sansEspaces = str_replace(' ', '_', $donnees['nom']);
-        $sansAppostrophe = str_replace("'", '', $sansEspaces);
-        $nom = str_replace_accent($sansAppostrophe);
+        $nom = str_replace_accent_espace($donnees['nom']);
         $dirImage = "../Projet/Photos/";
         if (is_dir($dirImage)) {
             if ($openedDir = opendir($dirImage)) {
@@ -132,90 +122,46 @@ session_start();
                 </p>
                 </div>
                 <div class="boxB">
-                    <?php
-                    $nomcocktail = $donnees['nom'];
-                    $nomcocktail = str_replace(' ', '_', $nomcocktail);
-                    $nomcocktail = str_replace('.', '', $nomcocktail);
-                    $nomcocktail = str_replace("'", '', $nomcocktail);
-                    $nomcocktail = str_replace_accent($nomcocktail);
-
-                    $recettecocktail = $donnees['ingredients'];
-                    $recettecocktail = str_replace(' ', '_', $recettecocktail);
-                    $recettecocktail = str_replace('.', '', $recettecocktail);
-                    $recettecocktail = str_replace("'", '', $recettecocktail);
-                    $recettecocktail = str_replace_accent($recettecocktail);
-
-                    $dansPanier = false;
-
-                    if (!isset($_SESSION['login'])) {
-                        if (!isset($_COOKIE[$nomcocktail])) {
-                            if (isset($_POST[$nomcocktail])) {
-                                setCookie($nomcocktail, $recettecocktail);
-                                header("Location: ./");
-                            }
-                            ?>
-                            <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">Ajouter à mes cocktails préférés
-                                </button>
-                            </form>
-                            <?php
-                        } else { ?>
-                            <?php
-                            if (isset($_POST[$nomcocktail])) {
-                                setCookie($nomcocktail, '', time() - 3600);
-                                header("Location: ./");
-                            }
-                            ?>
-                            <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
-                                </button>
-                            </form>
-                            <?php
-                        }
-                    } else {
-                        $panier = $bdd->query('SELECT * FROM panier');
-                        while ($element = $panier->fetch()) {
-                            if ($element['recette'] == $donnees['ingredients']) {
-                                if ($element['utilisateur'] == $_SESSION['login']) {
-                                    $dansPanier = true;
-                                }
-                            }
-                        }
-                        if ($dansPanier) {
-                            if (isset($_POST[$nomcocktail])) {
-                                $stmt = $bdd->prepare("DELETE FROM panier WHERE utilisateur = :utilisateur AND recette = :recette");
-                                $stmt->bindParam(':utilisateur', $_SESSION['login']);
-                                $stmt->bindParam(':recette', $donnees['ingredients']);
-
-                                $stmt->execute();
-                                header("Location: ./");
-                            } ?>
-                            <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">supprimer de mes cocktails préférés
-                                </button>
-                            </form>
-                            <?php
-                        } else {
-                            if (isset($_POST[$nomcocktail])) {
-                                $stmt = $bdd->prepare("INSERT INTO panier(utilisateur, recette) VALUES (:utilisateur, :recette)");
-                                $stmt->bindParam(':utilisateur', $_SESSION['login']);
-                                $stmt->bindParam(':recette', $donnees['ingredients']);
-
-                                $stmt->execute();
-                                header("Location: ./");
-                            } ?>
-                            <form method="post" action="index.php">
-                                <button class="button" name="<?= $nomcocktail; ?>">Ajouter à mes cocktails préférés
-                                </button>
-                            </form>
-                            <?php
+                <?php
+                $nomCocktail = $donnees['nom'];
+                $nomCocktailPhoto = $donnees['nom'];
+                $nomCocktailPhoto = str_replace_accent_espace($nomCocktailPhoto);
+                $recettecocktail = $donnees['ingredients'];
+                $recettecocktail = str_replace_accent_espace($recettecocktail);
+                $dansPanier = 0;
+                if($_SESSION['login']){
+                    //Si l'utilisateur est connecté
+                    //On regarde toutes les recettes dans son panier
+                    $panier = $bdd->prepare("SELECT * FROM Panier WHERE utilisateur = :utilisateur");
+                    $panier->bindParam(":utilisateur", $_SESSION['login']);
+                    $panier->execute();
+                    $dansPanier = 0;
+                    while($elementDansPanier = $panier->fetch()){
+                        if($elementDansPanier['nomRecette'] == $nomCocktail) {
+                            $dansPanier = 1;
                         }
                     }
-                    ?>
-                </div>
-                </div>
-                <?php
-            }
+                    if($dansPanier == 0) {
+                        ?>
+                            <button class="button" name='<?=$nomCocktail;?>' <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés
+                    </button>
+                        </div>
+                        <?php
+                    }
+                    else{
+                        ?>
+                        <form>
+                            <button class="button" name="<?= $nomCocktail; ?>">Supprimer de mes cocktails préférés
+                            </button>
+                        </form>
+                    </div>
+                    <?php
+                    }
+                }
+            }?>
+
+            </div>
+            <?php
         }
     }
 
