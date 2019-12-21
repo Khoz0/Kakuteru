@@ -7,5 +7,4 @@ $stmt = $bdd->prepare($sql);
 $stmt->bindParam(":utilisateur", $tabRequete[0]);
 $stmt->bindParam(":recette", $tabRequete[1]);
 $stmt->execute();
-
 ?>

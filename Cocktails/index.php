@@ -26,9 +26,16 @@ session_start();
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
         var str = user+"|"+recette;
+            xmlhttp.onreadystatechange = function(){
+                if(this.readyState == 4){
+                    document.location.href="./";
+                }
+                else{
+                    xmlhttp.send();
+                }
+            };
         xmlhttp.open("GET","addCocktail.php?p="+str,true);
         xmlhttp.send();
-        //document.location.href="./";
     }
 
     function suppRecette(user, recette){
@@ -41,15 +48,18 @@ session_start();
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         var str = user+"|"+recette;
-        alert(str);
         xmlhttp.onreadystatechange = function(){
-            alert("reponse ");
-            alert(this.responseText);
+            if(this.readyState == 4){
+                document.location.href="./";
+            }
+            else{
+                xmlhttp.send();
+            }
         };
         xmlhttp.open("GET","suppCocktail.php?p="+str,false);
         xmlhttp.send();
-        //document.location.href="./";
     }
+
     </script>
 
 </head>
@@ -149,6 +159,8 @@ session_start();
                 $recettecocktail = $donnees['ingredients'];
                 $recettecocktail = str_replace_accent_espace($recettecocktail);
                 $dansPanier = 0;
+
+                /*Si l'utilisateur est connecté*/
                 if(isset($_SESSION['login'])){
                     //Si l'utilisateur est connecté
                     //On regarde toutes les recettes dans son panier
@@ -163,21 +175,80 @@ session_start();
                     }
                     if($dansPanier == 0) {
                         ?>
-                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés
-                    </button>
+                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés</button>
                         </div>
                         <?php
                     }
                     else{
                         ?>
-                        <form>
-                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>">Supprimer de mes cocktails préférés
-                            </button>
-                        </form>
+                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>">Supprimer de mes cocktails préférés</button>
                     </div>
                     <?php
                     }
                 }
+
+                /*Si l'utilisateur n'est pas connecté*/
+                else{
+
+                    //Si le bouton correspondant au cocktail a été actionné
+                    if(isset($_GET[$nomCocktail])){
+
+                        echo "Vous avez cliqué sur ce bouton<br>";
+                        //Si on a déjà une variable session qui lui est associée
+                        if(isset($_SESSION['panier'][$nomCocktail])){
+
+                            //Si il était dans les cocktails favoris on l'enlève
+                            if($_SESSION['panier'][$nomCocktail] == 1){
+                                $_SESSION['panier'][$nomCocktail] = 0;
+                                ?>
+                                Je l'enlève des favoris<br>
+                                <form method="get">
+                                    <button class="button" name="<?=$nomCocktail;?>">Ajouter à mes cocktails préférés</button>
+                                </form>
+                            </div>
+                            <?php
+                            }
+
+                            //Sinon on l'ajoute aux favoris
+                            else{
+                            $_SESSION['panier'][$nomCocktail] = 1;
+                            ?>
+                                Je l'ajoute aux favoris1<br>
+                                <form method="get">
+                                    <button class="button" name="<?=$nomCocktail;?>">Supprimer de mes cocktails préférés</button>
+                                </form>
+                            </div>
+                            <?php
+                            }
+
+
+                        }
+
+                        //C'est la première fois que le bouton est cliqué
+                        else{
+                            $_SESSION['panier'][$nomCocktail] = 1;
+                            ?>
+                            Je l'ajoute aux favoris2<br>
+                            <form method="get">
+                                <button class="button" name="<?=$nomCocktail;?>">Supprimer de mes cocktails préférés</button>
+                            </form>
+                            </div>
+                            <?php
+                        }
+
+                    }
+
+                    //Le bouton n'a jamais été cliqué
+                    else{
+                        ?>
+                        <form method="get" action="./">
+                            <button class="button" name="<?=$nomCocktail;?>">Ajouter à mes cocktails préférés</button>
+                        </form>
+                        </div>
+                        <?php
+                    }
+                }
+
             }?>
 
             </div>
