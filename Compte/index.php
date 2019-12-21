@@ -74,23 +74,82 @@ session_start();
 				if (isset($_POST["validation"])){
 					// On vérifie ici que si l'utilisateur rentre un mot de passe, alors tous les champs de mots de passe sont rempli.
 					if (isset($_POST['ancienMdp']) && !empty($_POST["ancienMdp"])){
-						if (isset($_POST['nouveauMdp']) && !empty($_POST["nouveauMdp"])){
-							if (isset($_POST['confirmationMdp']) && !empty($_POST["confirmationMdp"]) && $_POST['nouveauMdp'] == $_POST['confirmationMdp']){
-								$requete = $bdd->prepare("UPDATE Utilisateur SET mdp = SHA1(:mdpChanger) WHERE login = :login");
-								$loginSession = $_SESSION['login'];
-								$mdpChanger = $_POST['confirmationMdp'];
-								$requete->bindParam('login', $loginSession);
-								$requete->bindParam('$mdpChanger', $mdpChanger);
-								$requete->execute();
-								echo "Nouveau mdp créé";
+						if (SHA1($_POST["ancienMdp"]) == $donnees['mdp']){
+							if (isset($_POST['nouveauMdp']) && !empty($_POST["nouveauMdp"]) && $_POST["nouveauMdp"] != $_POST['ancienMdp']){
+								if (isset($_POST['confirmationMdp']) && !empty($_POST["confirmationMdp"]) && $_POST['nouveauMdp'] == $_POST['confirmationMdp']){
+									$requete = $bdd->prepare("UPDATE Utilisateur SET mdp = SHA1(:mdpChanger) WHERE login = :loginSession");
+									$loginSession = $_SESSION['login'];
+									$mdpChanger = $_POST['confirmationMdp'];
+									$requete->bindParam('login', $loginSession);
+									$requete->bindParam('mdpChanger', $mdpChanger);
+									echo SHA1($mdpChanger);
+									$requete->execute();
+									echo "Nouveau mdp créé";
+								}else{
+									?> <em> Mot de passe de confirmation manquant ou différents du nouveau mot de passe </em> <?php
+								}
 							}else{
-								echo "mdp confirmation manquant";
+									?> <em> Nouveau mot de passe manquant ou identique à l'ancien </em> <?php
 							}
 						}else{
-								echo "nouveau mdp manquant";
+							?> <em> Mot de passe différent du mot de passe de l'utilisateur </em> <?php
 						}
-					}else{
-						echo "pas de modifications du mdp";
+					}
+					if ($donnees['login'] != $_POST['email']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET login = :login WHERE login = :login");
+						$nouveauLogin = $_POST['email'];
+						$requete->bindParam('login', $nouveauLogin);
+						$requete->execute();
+						echo "nouveau mail créé";
+					}
+					if ($donnees['adresse'] != $_POST['adresse']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET adresse = :adr WHERE login = :login");
+						$adr = $_POST['adresse'];
+						$requete->bindParam('adr', $adr);
+						$requete->execute();
+						echo "nouvelle adresse créée";
+					}
+					if ($donnees['nom'] != $_POST['nom']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET nom = :nom WHERE login = :login");
+						$nom = $_POST['nom'];
+						$requete->bindParam('nom', $nom);
+						$requete->execute();
+						echo "nouveau nom créé";
+					}
+					if ($donnees['prenom'] != $_POST['prenom']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET prenom = :prenom WHERE login = :login");
+						$prenom = $_POST['prenom'];
+						$requete->bindParam('prenom', $prenom);
+						$requete->execute();
+						echo "nouveau prenom créé";
+					}
+					if ($donnees['postal'] != $_POST['postal']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET postal = :postal WHERE login = :login");
+						$postal = $_POST['postal'];
+						$requete->bindParam('postal', $postal);
+						$requete->execute();
+						echo "nouveau code postal créé";
+					}
+					if ($donnees['sexe'] != $_POST['sexe']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET sexe = :sexe WHERE login = :login");
+						$sexe = $_POST['sexe'];
+						$requete->bindParam('sexe', $sexe);
+						$requete->execute();
+						echo "nouveau sexe créé";
+					}
+					if ($donnees['telephone'] != $_POST['telephone']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET telephone = :telephone WHERE login = :login");
+						$telephone = $_POST['telephone'];
+						$requete->bindParam('telephone', $telephone);
+						$requete->execute();
+						echo "nouveau telephone créé";
+					}
+					if ($donnees['ville'] != $_POST['ville']){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET ville = :ville WHERE login = :login");
+						$ville = $_POST['ville'];
+						$requete->bindParam('ville', $ville);
+						$requete->execute();
+						echo "nouvelle ville créée";
 					}
 				// On vérifie que l'utilisateur a appuyé sur le bouton de modification des informations du compte
 				}else if (isset($_POST["modification"])){
