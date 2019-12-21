@@ -21,11 +21,14 @@ session_start();
 
 <div id="header-wrapper">
 	<?php
+	// On regarde si l'utilisateur est connecté afin de savoir quel bouton afficher
 	if (isset($_SESSION['login'])){
+		// L'utilisateur est ici connecté on affiche donc le bouton de déconnexion
 	?>
 		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
 	}else{
+		// L'utilisateur est ici déconnecté on affiche donc le bouton de connexion
 	?>
 		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
@@ -66,11 +69,20 @@ session_start();
 	<div id="page" class="container">
 		<div class="boxA">
 			<form class="" action="#" method="post">
-				<?php if (isset($_POST["validation"])){
+				<?php
+				// On vérifie ici que l'utilisateur a appuyé sur le bouton de validation des changements
+				if (isset($_POST["validation"])){
+					// On vérifie ici que si l'utilisateur rentre un mot de passe, alors tous les champs de mots de passe sont rempli.
 					if (isset($_POST['ancienMdp']) && !empty($_POST["ancienMdp"])){
 						if (isset($_POST['nouveauMdp']) && !empty($_POST["nouveauMdp"])){
-							if (isset($_POST['confirmationMdp']) && !empty($_POST["confirmationMdp"])){
-								echo "on est la";
+							if (isset($_POST['confirmationMdp']) && !empty($_POST["confirmationMdp"]) && $_POST['nouveauMdp'] == $_POST['confirmationMdp']){
+								$requete = $bdd->prepare("UPDATE Utilisateur SET mdp = SHA1(:mdpChanger) WHERE login = :login");
+								$loginSession = $_SESSION['login'];
+								$mdpChanger = $_POST['confirmationMdp'];
+								$requete->bindParam('login', $loginSession);
+								$requete->bindParam('$mdpChanger', $mdpChanger);
+								$requete->execute();
+								echo "Nouveau mdp créé";
 							}else{
 								echo "mdp confirmation manquant";
 							}
@@ -80,7 +92,9 @@ session_start();
 					}else{
 						echo "pas de modifications du mdp";
 					}
-				}else if (isset($_POST["modification"])){?>
+				// On vérifie que l'utilisateur a appuyé sur le bouton de modification des informations du compte
+				}else if (isset($_POST["modification"])){
+					?>
 					<input name="email" type="email" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+" value=<?= $donnees['login'] ?>><br><br>
 					<?php if ($donnees['nom'] != "null"){ $nom = htmlspecialchars($donnees['nom'], ENT_QUOTES);?>
 						<input name="nom" value='<?= $nom ?>'><br><br>
