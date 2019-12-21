@@ -28,7 +28,27 @@ session_start();
         var str = user+"|"+recette;
         xmlhttp.open("GET","addCocktail.php?p="+str,true);
         xmlhttp.send();
-        document.location.href="./";
+        //document.location.href="./";
+    }
+
+    function suppRecette(user, recette){
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        var str = user+"|"+recette;
+        alert(str);
+        xmlhttp.onreadystatechange = function(){
+            alert("reponse ");
+            alert(this.responseText);
+        };
+        xmlhttp.open("GET","suppCocktail.php?p="+str,false);
+        xmlhttp.send();
+        //document.location.href="./";
     }
     </script>
 
@@ -129,7 +149,7 @@ session_start();
                 $recettecocktail = $donnees['ingredients'];
                 $recettecocktail = str_replace_accent_espace($recettecocktail);
                 $dansPanier = 0;
-                if($_SESSION['login']){
+                if(isset($_SESSION['login'])){
                     //Si l'utilisateur est connecté
                     //On regarde toutes les recettes dans son panier
                     $panier = $bdd->prepare("SELECT * FROM Panier WHERE utilisateur = :utilisateur");
@@ -143,7 +163,7 @@ session_start();
                     }
                     if($dansPanier == 0) {
                         ?>
-                            <button class="button" name='<?=$nomCocktail;?>' <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés
+                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés
                     </button>
                         </div>
                         <?php
@@ -151,7 +171,7 @@ session_start();
                     else{
                         ?>
                         <form>
-                            <button class="button" name="<?= $nomCocktail; ?>">Supprimer de mes cocktails préférés
+                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>">Supprimer de mes cocktails préférés
                             </button>
                         </form>
                     </div>
