@@ -94,13 +94,19 @@ session_start();
 							?> <em> Mot de passe différent du mot de passe de l'utilisateur </em> <?php
 						}
 					}
+					// On fait les différents tests afin de modifier les données de l'utilisateur
+
+					// On vérifie que le mail entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['login'] != $_POST['email'] && !empty($_POST['email'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET login = :login WHERE login = :login");
 						$nouveauLogin = $_POST['email'];
 						$requete->bindParam('login', $nouveauLogin);
 						$requete->execute();
-						echo "nouveau mail créé";
+						?> <p>Modification enregistrée.</p><br/><?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au mail.</p><br/><?php
 					}
+					// On vérifie que l'adresse entrée n'est ni vide, ni la même que celle contenue dans la base de données
 					if ($donnees['adresse'] != $_POST['adresse'] && !empty($_POST['adresse'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET adresse = :adr WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -108,8 +114,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('adr', $adr);
 						$requete->execute();
-						echo "nouvelle adresse créée";
+						?> <p>Modification enregistrée.</p><br/><?php
+					}else{
+						?> <p>Aucune modification n'a été apportée à l'adresse.</p><br/><?php
 					}
+					// On vérifie que le nom entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['nom'] != $_POST['nom'] && !empty($_POST['nom'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET nom = :nom WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -117,8 +126,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('nom', $nom);
 						$requete->execute();
-						echo "nouveau nom créé";
+						?> <p>Modification enregistrée.</p><br/><?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au nom.</p><br/><?php
 					}
+					// On vérifie que le prenom entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['prenom'] != $_POST['prenom'] && !empty($_POST['prenom'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET prenom = :prenom WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -126,8 +138,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('prenom', $prenom);
 						$requete->execute();
-						echo "nouveau prenom créé";
+						?> <p>Modification enregistrée.</p><br/><?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au prénom.</p><br/> <?php
 					}
+					// On vérifie que le code postal entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['postal'] != $_POST['postal'] && !empty($_POST['postal'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET postal = :postal WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -135,8 +150,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('postal', $postal);
 						$requete->execute();
-						echo "nouveau code postal créé";
+						?> <p>Modification enregistrée.</p><br/> <?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au code postal.</p><br/> <?php
 					}
+					// On vérifie que le sexe entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['sexe'] != $_POST['sexe'] && !empty($_POST['sexe'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET sexe = :sexe WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -144,8 +162,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('sexe', $sexe);
 						$requete->execute();
-						echo "nouveau sexe créé";
+						?> <p>Modification enregistrée.</p><br/> <?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au sexe.</p><br/> <?php
 					}
+					// On vérifie que le numéro de téléphone entré n'est ni vide, ni le même que celui contenu dans la base de données
 					if ($donnees['noTelephone'] != $_POST['telephone'] && !empty($_POST['telephone'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET noTelephone = :telephone WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -153,8 +174,11 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('telephone', $telephone);
 						$requete->execute();
-						echo "nouveau telephone créé";
+						?> <p>Modification enregistrée.</p><br/> <?php
+					}else{
+						?> <p>Aucune modification n'a été apportée au numéro de téléphone.</p><br/> <?php
 					}
+					// On vérifie que la ville entrée n'est ni vide, ni la même que celle contenue dans la base de données
 					if ($donnees['ville'] != $_POST['ville'] && !empty($_POST['ville'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET ville = :ville WHERE login = :login");
 						$loginSession = $_SESSION['login'];
@@ -162,10 +186,17 @@ session_start();
 						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('ville', $ville);
 						$requete->execute();
-						echo "nouvelle ville créée";
+						?> <p>Modification enregistrée.</p><br/> <?php
+					}else{
+						?> <p>Aucune modification n'a été apportée à la ville.</p><br/> <?php
 					}
+					?>
+					<button name="retour" action="./"> Retour </button>
+					<?php
 				// On vérifie que l'utilisateur a appuyé sur le bouton de modification des informations du compte
 				}else if (isset($_POST["modification"])){
+					// On rempli les champs du formulaire avec les informations contenues dan sla base de données s'il y en a,
+					// sinon on met un placeholder afin d'indiquer quel champs correspond à quelle information à modifier
 					?>
 					<input name="email" type="email" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+" value=<?= $donnees['login'] ?>><br><br>
 					<?php if ($donnees['nom'] != "null"){ $nom = htmlspecialchars($donnees['nom'], ENT_QUOTES);?>
@@ -211,7 +242,9 @@ session_start();
 					<input name="confirmationMdp" type="password" placeholder="Confirmation du nouveau mot de passe"><br><br>
 					<br>
 					<p><input name = "validation" type="submit" value="Enregistrer"></p>
-				<?php }else{ ?>
+				<?php }else{
+					// On affiche les informations du compte de l'utilisateur
+					?>
 					<p>Email : <?php echo $donnees['login']; ?> </p>
 					<p>Nom : <?php echo $donnees['nom']; ?> </p>
 					<p>Prenom : <?php echo $donnees['prenom']; ?> </p>
@@ -229,6 +262,7 @@ session_start();
 			<form class="" action="#" method="post">
 				<p>Email : <?php echo $_SESSION['login']; ?> </p>
 				<?php if (isset($_POST["suppression"])){
+					// On supprime k'utilisateur de la base de données si le bouton de suppression a été pressé
 					$requete = $bdd->prepare("DELETE FROM Utilisateur WHERE login = :login");
 					$login = $_SESSION['login'];
 					$requete->bindParam('login', $login);

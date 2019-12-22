@@ -18,11 +18,11 @@ session_start();
     <script>
     function ajoutRecette(user, recette){
             if (window.XMLHttpRequest) {
-                // code for IE7+, Firefox, Chrome, Opera, Safari
+                // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
                 xmlhttp = new XMLHttpRequest();
             }
             else {
-                // code for IE6, IE5
+                // code pour les navigateurs IE6, IE5
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
         var str = user+"|"+recette;
@@ -33,11 +33,11 @@ session_start();
 
     function suppRecette(user, recette){
         if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
+            // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
             xmlhttp = new XMLHttpRequest();
         }
         else {
-            // code for IE6, IE5
+            // code pour les navigateurs IE6, IE5
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         var str = user+"|"+recette;
@@ -88,7 +88,7 @@ session_start();
     <span> Voici la liste de nos différents cocktails (disponible dès à présent sur le KakuteruStore)</span> </div>
 
     <?php
-
+    // Fonction permettant de remplacer les caractère spéciaux, accentués en caractères normaux
     function str_replace_accent_espace($str)
     {
         $newStr = $str;
