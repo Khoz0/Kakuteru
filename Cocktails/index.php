@@ -60,6 +60,50 @@ session_start();
         xmlhttp.send();
     }
 
+    function addCookie(recette) {
+        if (window.XMLHttpRequest) {
+            // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code pour les navigateurs IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function(){
+            if(this.readyState == 4){
+                document.location.href="./";
+            }
+            else{
+                xmlhttp.send();
+            }
+        };
+        xmlhttp.open("GET","addCookie.php?p="+recette,true);
+        xmlhttp.send();
+    }
+
+    function suppCookie(recette) {
+        if (window.XMLHttpRequest) {
+            // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code pour les navigateurs IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function(){
+            if(this.readyState == 4){
+                document.location.href="./";
+            }
+            else{
+                xmlhttp.send();
+            }
+        };
+        xmlhttp.open("GET","suppCookie.php?p="+recette,true);
+        xmlhttp.send();
+    }
+
     </script>
 
 </head>
@@ -162,6 +206,17 @@ session_start();
 
                 /*Si l'utilisateur est connecté*/
                 if(isset($_SESSION['login'])){
+
+                    //On ajoute les cocktails déjà sélectionnés hors connexion
+                    if(isset($_SESSION['panier'])){
+                        foreach ($_SESSION['panier'] as $cocktailCookie=>$elem){
+                            $panier = $bdd->prepare("INSERT INTO Panier(utilisateur, nomRecette) VALUES (:utilisateur, :recette)");
+                            $panier->bindParam(":utilisateur", $_SESSION['login']);
+                            $panier->bindParam(":recette", $cocktailCookie);
+                            $panier->execute();
+                        }
+                    }
+
                     //Si l'utilisateur est connecté
                     //On regarde toutes les recettes dans son panier
                     $panier = $bdd->prepare("SELECT * FROM Panier WHERE utilisateur = :utilisateur");
@@ -181,7 +236,7 @@ session_start();
                     }
                     else{
                         ?>
-                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>">Supprimer de mes cocktails préférés</button>
+                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Supprimer de mes cocktails préférés</button>
                     </div>
                     <?php
                     }
@@ -190,60 +245,34 @@ session_start();
                 /*Si l'utilisateur n'est pas connecté*/
                 else{
 
-                    //Si le bouton correspondant au cocktail a été actionné
-                    if(isset($_GET[$nomCocktail])){
+                    //Si on a déjà une variable session qui lui est associée
+                    if(isset($_SESSION['panier'][$nomCocktail])){
 
-                        echo "Vous avez cliqué sur ce bouton<br>";
-                        //Si on a déjà une variable session qui lui est associée
-                        if(isset($_SESSION['panier'][$nomCocktail])){
-
-                            //Si il était dans les cocktails favoris on l'enlève
-                            if($_SESSION['panier'][$nomCocktail] == 1){
-                                $_SESSION['panier'][$nomCocktail] = 0;
-                                ?>
-                                Je l'enlève des favoris<br>
-                                <form method="get">
-                                    <button class="button" name="<?=$nomCocktail;?>">Ajouter à mes cocktails préférés</button>
-                                </form>
-                            </div>
-                            <?php
-                            }
-
-                            //Sinon on l'ajoute aux favoris
-                            else{
-                            $_SESSION['panier'][$nomCocktail] = 1;
-                            ?>
-                                Je l'ajoute aux favoris1<br>
-                                <form method="get">
-                                    <button class="button" name="<?=$nomCocktail;?>">Supprimer de mes cocktails préférés</button>
-                                </form>
-                            </div>
-                            <?php
-                            }
-
-
+                    //Si il était dans les cocktails favoris on l'enlève
+                    if($_SESSION['panier'][$nomCocktail] == 1){
+                    $nomCocktail = str_replace("'", "\'", $nomCocktail);
+                    ?>
+                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"suppCookie('$nomCocktail')\""?>>Supprimer de mes cocktails préférés</button>
+                        </div>
+                        <?php
                         }
 
-                        //C'est la première fois que le bouton est cliqué
+                        //Sinon on l'ajoute aux favoris
                         else{
-                            $_SESSION['panier'][$nomCocktail] = 1;
-                            ?>
-                            Je l'ajoute aux favoris2<br>
-                            <form method="get">
-                                <button class="button" name="<?=$nomCocktail;?>">Supprimer de mes cocktails préférés</button>
-                            </form>
-                            </div>
-                            <?php
+                        $nomCocktail = str_replace("'", "\'", $nomCocktail);
+                        ?>
+                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
+                        </div>
+                        <?php
                         }
 
                     }
 
                     //Le bouton n'a jamais été cliqué
                     else{
+                        $nomCocktail = str_replace("'", "\'", $nomCocktail);
                         ?>
-                        <form method="get" action="./">
-                            <button class="button" name="<?=$nomCocktail;?>">Ajouter à mes cocktails préférés</button>
-                        </form>
+                        <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
                         </div>
                         <?php
                     }
