@@ -95,58 +95,72 @@ session_start();
 							?> <em> Mot de passe différent du mot de passe de l'utilisateur </em> <?php
 						}
 					}
-					if ($donnees['login'] != $_POST['email']){
+					if ($donnees['login'] != $_POST['email'] && !empty($_POST['email'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET login = :login WHERE login = :login");
 						$nouveauLogin = $_POST['email'];
 						$requete->bindParam('login', $nouveauLogin);
 						$requete->execute();
 						echo "nouveau mail créé";
 					}
-					if ($donnees['adresse'] != $_POST['adresse']){
+					if ($donnees['adresse'] != $_POST['adresse'] && !empty($_POST['adresse'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET adresse = :adr WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$adr = $_POST['adresse'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('adr', $adr);
 						$requete->execute();
 						echo "nouvelle adresse créée";
 					}
-					if ($donnees['nom'] != $_POST['nom']){
+					if ($donnees['nom'] != $_POST['nom'] && !empty($_POST['nom'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET nom = :nom WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$nom = $_POST['nom'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('nom', $nom);
 						$requete->execute();
 						echo "nouveau nom créé";
 					}
-					if ($donnees['prenom'] != $_POST['prenom']){
+					if ($donnees['prenom'] != $_POST['prenom'] && !empty($_POST['prenom'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET prenom = :prenom WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$prenom = $_POST['prenom'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('prenom', $prenom);
 						$requete->execute();
 						echo "nouveau prenom créé";
 					}
-					if ($donnees['postal'] != $_POST['postal']){
+					if ($donnees['postal'] != $_POST['postal'] && !empty($_POST['postal'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET postal = :postal WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$postal = $_POST['postal'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('postal', $postal);
 						$requete->execute();
 						echo "nouveau code postal créé";
 					}
-					if ($donnees['sexe'] != $_POST['sexe']){
+					if ($donnees['sexe'] != $_POST['sexe'] && !empty($_POST['sexe'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET sexe = :sexe WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$sexe = $_POST['sexe'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('sexe', $sexe);
 						$requete->execute();
 						echo "nouveau sexe créé";
 					}
-					if ($donnees['telephone'] != $_POST['telephone']){
-						$requete = $bdd->prepare("UPDATE Utilisateur SET telephone = :telephone WHERE login = :login");
+					if ($donnees['noTelephone'] != $_POST['telephone'] && !empty($_POST['telephone'])){
+						$requete = $bdd->prepare("UPDATE Utilisateur SET noTelephone = :telephone WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$telephone = $_POST['telephone'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('telephone', $telephone);
 						$requete->execute();
 						echo "nouveau telephone créé";
 					}
-					if ($donnees['ville'] != $_POST['ville']){
+					if ($donnees['ville'] != $_POST['ville'] && !empty($_POST['ville'])){
 						$requete = $bdd->prepare("UPDATE Utilisateur SET ville = :ville WHERE login = :login");
+						$loginSession = $_SESSION['login'];
 						$ville = $_POST['ville'];
+						$requete->bindParam('login', $loginSession);
 						$requete->bindParam('ville', $ville);
 						$requete->execute();
 						echo "nouvelle ville créée";
@@ -188,7 +202,7 @@ session_start();
 						<input name="ville" placeholder="Nouvelle ville"><br><br>
 					<?php }
 					if ($donnees['noTelephone'] != 0){ ?>
-						<input name="telephone" type="tel" pattern="0[3, 6, 9, 7, 2][0-9]{8}" value=<?= $donnees['noTelephone'] ?>><br><br>
+						<input name="telephone" type="tel" pattern="0[3, 6, 9, 7, 2, 1][0-9]{8}" value=<?= $donnees['noTelephone'] ?>><br><br>
 					<?php }else{ ?>
 						<input name="telephone" type="tel" placeholder="0xxxxxxxxx" pattern="0[3, 6, 9, 7, 2][0-9]{8}"><br><br>
 					<?php } ?>
