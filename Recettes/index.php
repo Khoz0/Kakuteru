@@ -57,18 +57,18 @@ session_start();
             }
             else {
                 if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
                     xmlhttp = new XMLHttpRequest();
                 }
                 else {
-                    // code for IE6, IE5
+                    // code pour les navigateurs IE6, IE5
                     xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
                 }
                 xmlhttp.onreadystatechange = function() {
                     var optionListe='';
                     var liste = this.responseText.split("\n");
                     for (var i=0; i < liste.length;++i){
-                        optionListe += "<option value=\""+liste[i]+"\" />\n"; // Storing options in variable
+                        optionListe += "<option value=\""+liste[i]+"\" />\n"; // Stockage des options dans une variable
                     }
                     listSugg.innerHTML = optionListe;
                 };
@@ -167,10 +167,10 @@ session_start();
             });
 
             if (window.XMLHttpRequest) {
-                // code for IE7+, Firefox, Chrome, Opera, Safari
+                // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
                 xmlhttp = new XMLHttpRequest();
             } else {
-                // code for IE6, IE5
+                // code pour les navigateurs IE6, IE5
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             var element = document.createElement("p");
