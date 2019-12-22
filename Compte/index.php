@@ -80,9 +80,8 @@ session_start();
 									$requete = $bdd->prepare("UPDATE Utilisateur SET mdp = SHA1(:mdpChanger) WHERE login = :loginSession");
 									$loginSession = $_SESSION['login'];
 									$mdpChanger = $_POST['confirmationMdp'];
-									$requete->bindParam('login', $loginSession);
+									$requete->bindParam('loginSession', $loginSession);
 									$requete->bindParam('mdpChanger', $mdpChanger);
-									echo SHA1($mdpChanger);
 									$requete->execute();
 									echo "Nouveau mdp créé";
 								}else{
