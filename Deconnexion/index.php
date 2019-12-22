@@ -26,7 +26,7 @@ unset($_SESSION);
 <div id="header-wrapper">
     <div id="header" class="container">
         <div id="logo">
-            <h1><a href="../kakuteru">Kakuteru</a></h1>
+            <h1><a href="../">Kakuteru</a></h1>
         </div>
         <div id="menu">
             <ul>

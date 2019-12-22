@@ -3,7 +3,7 @@
 include("../ConnexionBD/index.php");
 
 $ing = $_GET['ing'];
-$sql = "SELECT nomIngredient FROM ingredients WHERE nomIngredient LIKE '".$ing."%'";
+$sql = "SELECT DISTINCT nomIngredient FROM Liaison WHERE nomIngredient LIKE '".$ing."%'";
 
 $stmt = $bdd->prepare($sql);
 $stmt->execute();
