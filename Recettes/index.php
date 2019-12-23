@@ -46,6 +46,7 @@ session_start();
         var listeAjout = new Array();
         var listeSupp = new Array();
 
+        //Fonction qui ajoute à la liste déroulante les options de complétion
         function suggestion(str) {
             const listSugg = document.getElementById("suggestion");
             if (str == "") {
@@ -78,6 +79,7 @@ session_start();
             }
         }
 
+        //Fonction qui retire un ingredient de la recherche d'ajout ainsi que son bouton
         function deleteIngAjout(str){
             listeAjout.splice(listeAjout.indexOf(str), 1);
             afficheRecette("");
@@ -85,6 +87,7 @@ session_start();
             btn.remove();
         }
 
+        //Fonction qui retire un ingredient de la recherche de suppression ainsi que son bouton
         function deleteIngSupp(str){
             listeSupp.splice(listeSupp.indexOf(str), 1);
             afficheRecette("");
@@ -92,6 +95,7 @@ session_start();
             btn.remove();
         }
 
+        //Focntion qui ajoute un ingrédient à la recherche d'ajout et crée son bouton
         function ajoutIng(str) {
             if(listeAjout.indexOf(str) == -1) {
                 /*Ajout de l'ingrédient à la liste des ajouts*/
@@ -109,6 +113,7 @@ session_start();
             }
         }
 
+        //Focntion qui ajoute un ingrédient à la recherche de suppression et crée son bouton
         function suppressionIng(str) {
             /*Ajout de l'ingrédient à la liste des suppressions*/
             if(listeSupp.indexOf(str) == -1) {
@@ -127,7 +132,7 @@ session_start();
             }
         }
 
-
+        //Affiche les recettes en fonction des différentes listes de recherche
         function afficheRecette(cond) {
             if (cond == 'ajout') {
                 ajoutIng(document.getElementById('ingVoulu').value);
@@ -197,6 +202,7 @@ session_start();
             xmlhttp.send();
         }
 
+        //Retourne le corps HTML du paragraphe des recettes
         function innerHTMLRecette(liste){
             var listeRecettes = String(liste).split("_");
             var strP = "<br><br>";
@@ -221,23 +227,31 @@ session_start();
 <body>
 <div id="header-wrapper">
   <?php
+        //On affiche le bouton déconnexion si l'utilisateur est connecté
 		if (isset($_SESSION['login'])){
 	?>
 		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
-	}else{
+		}
+        //On affiche le bouton connexion si l'utilisateur n'est pas connecté
+		else{
 	?>
 		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
+
+
     <div id="header" class="container">
         <div id="logo">
             <h1><a href="../index.php">Kakuteru</a></h1>
         </div>
+
+        <!--Bandeau de navigation-->
         <div id="menu">
             <ul>
                 <li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
                 <li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="#" accesskey="3" title="">Nos recettes</a></li>
+                <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
         				<?php if (isset($_SESSION['login'])){ ?>
         				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
         				<?php } ?>
@@ -246,6 +260,8 @@ session_start();
         </div>
     </div>
 </div>
+
+
 <div id="wrapper">
   <div id="page" class="container">
     <h2> Recherche des cocktails en fonction de vos envies</h2>

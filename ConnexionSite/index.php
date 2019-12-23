@@ -1,5 +1,6 @@
 <?php
 include("../ConnexionBD/index.php");
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -22,11 +23,14 @@ include("../ConnexionBD/index.php");
 		<div id="logo">
 			<h1><a href="../">Kakuteru</a></h1>
 		</div>
+
+        <!--Bandeau de navigation-->
 		<div id="menu">
 			<ul>
 				<li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
 				<li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
+                <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>

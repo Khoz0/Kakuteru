@@ -1,5 +1,6 @@
 <?php
 include("../ConnexionBD/index.php");
+ob_start();
 session_start();
 ?>
 
@@ -16,6 +17,7 @@ session_start();
     <link href="../fonts.css" rel="stylesheet" type="text/css" media="all" />
 
     <script>
+        //Fonction permettant d'ajouter une recette au panier quand l'utilisateur est connecté
     function ajoutRecette(user, recette){
             if (window.XMLHttpRequest) {
                 // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
@@ -38,6 +40,7 @@ session_start();
         xmlhttp.send();
     }
 
+    //Fonction permettant de supprimer une recette du panier quand l'utilisateur est connecté
     function suppRecette(user, recette){
         if (window.XMLHttpRequest) {
             // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
@@ -60,6 +63,7 @@ session_start();
         xmlhttp.send();
     }
 
+    //Fonction permettant d'ajouter une recette au panier quand l'utilisateur n'est pas connecté
     function addCookie(recette) {
         if (window.XMLHttpRequest) {
             // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
@@ -82,6 +86,8 @@ session_start();
         xmlhttp.send();
     }
 
+
+    //Fonction permettant de supprimer une recette du panier quand l'utilisateur n'est pas connecté
     function suppCookie(recette) {
         if (window.XMLHttpRequest) {
             // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
@@ -104,20 +110,50 @@ session_start();
         xmlhttp.send();
     }
 
+    //Fonction qui change la catégorie courante par celle donnée en paramètre et enregistre le chemin parcourue jusque celle ci dans $_SESSION
+    function sousCat(superCat) {
+
+        if (window.XMLHttpRequest) {
+            // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code pour les navigateurs IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function(){
+            if(this.readyState == 4){
+                document.location.href="./";
+            }
+            else{
+                xmlhttp.send();
+            }
+        };
+        xmlhttp.open("GET","sousCat.php?p="+superCat,true);
+        xmlhttp.send();
+    }
+
     </script>
 
 </head>
 <body>
 <div id="header-wrapper">
   <?php
+        //On affiche le bouton déconnexion si l'utilisateur est connecté
 		if (isset($_SESSION['login'])){
 	?>
 		<button onclick = "location.href='../Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
-	}else{
+		}
+
+		//On affiche le bouton connexion si l'utilisateur n'est pas connecté
+		else{
 	?>
 		<button onclick="window.location.href = '../ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
+
+    <!--Bandeau de navigation-->
     <div id="header" class="container">
         <div id="logo">
            <h1><a href="../">Kakuteru</a></h1>
@@ -127,6 +163,7 @@ session_start();
                 <li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
                 <li><a href="#" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
+                        <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
         				<?php if (isset($_SESSION['login'])){ ?>
         				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
         				<?php } ?>
@@ -135,6 +172,7 @@ session_start();
         </div>
     </div>
 </div>
+
 <div id="wrapper">
 	<div id="staff" class="container">
     <div class="title">
@@ -168,6 +206,68 @@ session_start();
 
         return ($newStr);
     }
+
+    ?>
+
+        <h2>Choisissez un filtre pour vos boisson</h2><br>
+        <div>
+            <?php
+            //On affiche toutes les catégories possibles de sélectionner
+
+            //Si c'est le premier chargement la catégorie courante est Aliment
+            if(!isset($_SESSION['categorieCourante'])) {
+            $_SESSION['categorieCourante'] = 'Aliment';
+            $superCat = $bdd->query("SELECT DISTINCT nom FROM SuperCategorie WHERE nomSuper = 'Aliment'");
+            while ($donnees = $superCat->fetch()) {
+                $nomCat = $donnees['nom'];
+                $nomCat = str_replace("'", "\'", $nomCat);
+                echo "<button class='boutonCat' onclick=\"sousCat('" . $nomCat . "')\">" . $donnees['nom'] . "</button>";
+            }
+            ?>
+        </div><br>
+        <?php
+        }
+            //Sinon on prend la catégorie courante enregistrée
+            else{
+                if(isset($_SESSION['supCategorie'])){
+                    foreach ($_SESSION['supCategorie'] as $cat => $val){
+                        echo "<button class='boutonCat'>$cat</button><br><br>";
+                    }
+                }
+                $superCat = $bdd->prepare("SELECT DISTINCT nom FROM SuperCategorie WHERE nomSuper = :super");
+                $superCat->bindParam(":super", $_SESSION['categorieCourante']);
+                $superCat->execute();
+                while ($donnees = $superCat->fetch()) {
+                    $nomCat = $donnees['nom'];
+                    $nomCat = str_replace("'", "\'", $nomCat);
+                    echo "<button class='boutonCat' onclick=\"sousCat('".$nomCat."')\">".$donnees['nom']."</button>";
+                }
+                ?>
+    </div><br>
+    <?php
+    }
+
+
+    /*$sql = "SELECT nom FROM SuperCategorie WHERE nomSuper = '".$_SESSION['categorieCourante']."'";
+    $categorie = $bdd->query($sql);
+    $sousCatPossible = 1;
+    $sqlAdd = "";
+    $cpt = 0;
+    while($sousCatPossible == 1) {
+        $cpt++;
+        echo $cpt."<br><br>";
+        echo $sql."<br><br>";
+        if ($donnees = $categorie->fetch()) {
+            $sql = $sql.$sqlAdd;
+            $sqlAdd = " OR nomSuper IN (" . $sql . ")";
+            $categorie = $bdd->query($sql.$sqlAdd);
+        }
+        else{
+            $sousCatPossible = 0;
+        }
+    }
+    echo $sql;*/
+
     // On récupère tout le contenu de la table recettes
     $recettes = $bdd->query('SELECT * FROM Recettes');
 
@@ -204,7 +304,9 @@ session_start();
                 $recettecocktail = str_replace_accent_espace($recettecocktail);
                 $dansPanier = 0;
 
-                /*Si l'utilisateur est connecté*/
+                //Gestion du panier
+
+                //Si l'utilisateur est connecté
                 if(isset($_SESSION['login'])){
 
                     //On ajoute les cocktails déjà sélectionnés hors connexion
@@ -228,12 +330,15 @@ session_start();
                             $dansPanier = 1;
                         }
                     }
+                    //Si la recette en cours est dans son panier
                     if($dansPanier == 0) {
                         ?>
                             <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés</button>
                         </div>
                         <?php
                     }
+
+                    //Si la recette en cours n'est pas dans son panier
                     else{
                         ?>
                             <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Supprimer de mes cocktails préférés</button>
@@ -242,13 +347,13 @@ session_start();
                     }
                 }
 
-                /*Si l'utilisateur n'est pas connecté*/
+                //Si l'utilisateur n'est pas connecté
                 else{
 
-                    //Si on a déjà une variable session qui lui est associée
+                    //Si on a déjà une variable session qui est associée au cocktail en cours
                     if(isset($_SESSION['panier'][$nomCocktail])){
 
-                    //Si il était dans les cocktails favoris on l'enlève
+                    //Si il est dans les coktails favoris
                     if($_SESSION['panier'][$nomCocktail] == 1){
                     $nomCocktail = str_replace("'", "\'", $nomCocktail);
                     ?>
@@ -257,7 +362,7 @@ session_start();
                         <?php
                         }
 
-                        //Sinon on l'ajoute aux favoris
+                        //Si il n'est pas dans les coktails favoris
                         else{
                         $nomCocktail = str_replace("'", "\'", $nomCocktail);
                         ?>
@@ -268,7 +373,7 @@ session_start();
 
                     }
 
-                    //Le bouton n'a jamais été cliqué
+                    //Si on n'a pas déjà une variable session qui est associée au cocktail en cours
                     else{
                         $nomCocktail = str_replace("'", "\'", $nomCocktail);
                         ?>

@@ -1,14 +1,14 @@
 <?php
 include("../ConnexionBD/index.php");
 
-$sql = "SELECT DISTINCT nomRecette FROM liaison WHERE ";
+$sql = "SELECT DISTINCT nomRecette FROM Liaison WHERE ";
 
 $listeIng = $_GET['ing'];
 $sql .= $listeIng;
 
 $recette = $bdd->prepare($sql);
 $recette->execute();
-$ingredients = $bdd->prepare("SELECT nomIngredient FROM liaison WHERE nomRecette = :recette");
+$ingredients = $bdd->prepare("SELECT nomIngredient FROM Liaison WHERE nomRecette = :recette");
 
 while ($donnees = $recette->fetch()) {
     echo $donnees['nomRecette']."\n";

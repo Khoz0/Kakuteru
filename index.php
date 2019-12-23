@@ -20,11 +20,14 @@ session_start();
 <body>
 <div id="header-wrapper">
 	<?php
-		if (isset($_SESSION['login'])){
+    //On affiche le bouton déconnexion si l'utilisateur est connecté
+    if (isset($_SESSION['login'])){
 	?>
 		<button onclick = "location.href='Deconnexion/'" class="button" style=vertical-align:middle>Déconnexion</button>
 	<?php
-	}else{
+	}
+    //On affiche le bouton connexion si l'utilisateur n'est pas connecté
+    else{
 	?>
 		<button onclick="window.location.href = 'ConnexionSite/';" class="button" style=vertical-align:middle>Connexion</button>
 	<?php } ?>
@@ -37,6 +40,7 @@ session_start();
 				<li class="active"><a href="#" accesskey="1" title="">Accueil</a></li>
 				<li><a href="Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="Recettes/" accesskey="3" title="">Nos recettes</a></li>
+                <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="Compte/" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>

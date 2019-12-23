@@ -1,5 +1,6 @@
 <?php
 include("../ConnexionBD/index.php");
+ob_start();
 session_start();
 ?>
 
@@ -36,11 +37,14 @@ session_start();
 		<div id="logo">
 			<h1><a href="../">Kakuteru</a></h1>
 		</div>
+
+        <!--Bandeau de navigation-->
 		<div id="menu">
 			<ul>
 				<li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
 				<li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
+                <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="#" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
@@ -56,6 +60,8 @@ session_start();
 	$loginSession = $_SESSION['login'];
 	$requete->bindParam('loginSession', $loginSession);
 	$requete->execute();
+
+	//Si l'utilisateur a entré son nom, on l'affiche, sinon on affiche son email
 	if($donnees = $requete->fetch()){
 		if ($donnees['nom'] != 'null'){
 			echo "Espace personnel du membre : ".$donnees['nom'];

@@ -28,6 +28,8 @@ unset($_SESSION);
         <div id="logo">
             <h1><a href="../">Kakuteru</a></h1>
         </div>
+
+        <!--Bandeau de navigation-->
         <div id="menu">
             <ul>
                 <li class="active"><a href="../kakuteru" accesskey="1" title="">Accueil</a></li>
@@ -46,8 +48,5 @@ unset($_SESSION);
     </div>
 </div>
 
-<div id="copyright" class="container">
-    <p>&copy; Untitled. All rights reserved. | Photos by <a href="http://fotogrph.com/">Fotogrph</a> | Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
-</div>
 </body>
 </html>

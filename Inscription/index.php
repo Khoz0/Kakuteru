@@ -32,11 +32,14 @@ session_start();
 		<div id="logo">
 			<h1><a href="../">Kakuteru</a></h1>
 		</div>
+
+        <!--Bandeau de navigation-->
 		<div id="menu">
 			<ul>
 				<li class="active"><a href="../" accesskey="1" title="">Accueil</a></li>
 				<li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
 				<li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
+                <!--On affiche l'onglet mon compte si l'utilisateur est connecté-->
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="../Compte/" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
@@ -62,6 +65,7 @@ session_start();
 					<?php
 					if (isset($_POST["submit"])){
 
+					    //Tous les champs non obligatoires peuvent être null
 						$nom = "null";
 						$prenom = "null";
 						$adresse = "null";
@@ -73,16 +77,24 @@ session_start();
 						$mailVerification = $_POST['email'];
 						$results->bindParam(':mailVerification', $mailVerification);
 						$results->execute();
+
+						//On vérifie que l'email entré n'est pas celui d'un autre utilisateur déjà inscrit
 						if ($donnees = $results->fetch()){?>
 							<em> L'adresse mail : <?= $donnees['login'];?> est déjà utilisée</em>
 							<br>
 						<?php
-						}else{
+						}
+
+						//Le mail n'est pas utilisé par quelqu'un d'autre
+						else{
+
+						    //On vérifie que le mot de passe fait moins de 16 caractère
 							if (strlen($_POST["mdp"]) <= 16){
 								$email = $_POST["email"];
 								$mdp = $_POST["mdp"];
 								$sexe = $_POST["sexe"];
 
+								//Si les champs obligatoires ne sont pas vides, on enregistre leur valeur
 								if (!empty($_POST["nom"])){
 									$nom = $_POST["nom"];
 								}
@@ -101,6 +113,8 @@ session_start();
 								if(!empty($_POST["telephone"])){
 									$telephone = $_POST["telephone"];
 								}
+
+								//On insère tous les champs dans la base de données
 								$stmt = $bdd->prepare("INSERT INTO Utilisateur (nom, prenom, login, mdp, sexe, adresse, postal, ville, noTelephone) VALUES (:nom, :prenom, :login, SHA1(:mdp), :sexe, :adresse, :postal, :ville, :noTelephone)");
 								$stmt->bindParam(':nom', $nom);
 								$stmt->bindParam(':prenom', $prenom);
@@ -117,14 +131,17 @@ session_start();
 									header("Location: ../");
 								}
 							}
+
+							//Le mot de passe fait plus de 16 caractères
 							else{
 								?> <em>Le mot de passe doit contenir moins de 16 caractères<br><br></em><?php
 							}
 						}
 					}
-					//header("Location : ../");
 					?>
+
 					<label for="email">Email <em>*</em></label>
+                  <!--L'email doit correspondre à l'expression régulière donnée-->
 					<input name="email" type="email" placeholder="Email" required="" pattern="[aA0-zZ9]+[.]?[aA0-zZ9]*@[aA-zZ]*[.]{1}[aA-zZ]+"><br>
 					<label for="mdp">Mot de passe <em>*</em></label>
 					<input name="mdp" type="password" required = ""><br>
@@ -146,10 +163,12 @@ session_start();
 					<label for="adresse">Adresse</label>
 					<input name="adresse"><br>
 					<label for="postal">Code postal</label>
+                  <!--Le code postal doit correspondre à l'expression régulière donnée-->
 					<input name="postal" pattern="[0-9]{5}"><br>
 					<label for="ville">Ville</label>
 					<input name="ville"><br>
 					<label for="telephone">Téléphone</label>
+                  <!--Le numéro de téléphone doit correspondre à l'expression régulière donnée-->
 					<input name="telephone" type="tel" placeholder="0xxxxxxxxx" pattern="0[3, 6, 9, 7, 2][0-9]{8}"><br>
 			  </fieldset>
 			  <p><input name = "submit" type="submit" value="Créer le compte"></p>

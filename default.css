@@ -711,6 +711,20 @@ input[type=submit] {
   right: 0;
 }
 
+.boutonCat{
+	display: inline;
+	border-radius: 4px;
+	background-color: #777877;
+	border: none;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 12px;
+	width: 100px;
+	padding: 1% 0;
+	cursor: pointer;
+	margin: 0 5px;
+}
+
 .btnAjout {
 	background-color: rgba(16,138,0,0.58);
 	border-radius: 4px;
