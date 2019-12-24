@@ -134,6 +134,30 @@ session_start();
         xmlhttp.send();
     }
 
+    function backLead(categorie){
+
+        if (window.XMLHttpRequest) {
+            // code pour les navigateurs IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code pour les navigateurs IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function(){
+            if(this.readyState == 4){
+                document.location.href="./";
+            }
+            else{
+                xmlhttp.send();
+            }
+        };
+        xmlhttp.open("GET","backLead.php?p="+categorie,true);
+        xmlhttp.send();
+
+    }
+
     </script>
 
 </head>
@@ -207,6 +231,29 @@ session_start();
         return ($newStr);
     }
 
+    function connexion(){
+        try
+        {
+            // On se connecte à MySQL
+            $bdd = new PDO('mysql:host=localhost;dbname=kakuteru;charset=utf8', 'root', '');
+            return $bdd;
+        }
+        catch(Exception $e)
+        {
+            // En cas d'erreur, on affiche un message et on arrête tout
+            die('Erreur : '.$e->getMessage());
+        }
+    }
+
+    function sousCategorie($categorie){
+        $sql = "SELECT nom FROM SuperCategorie WHERE nomSuper = \"".$categorie."\"";
+        $bdd = connexion();
+        $req = $bdd->query($sql);
+        while($donnes = $req->fetch()){
+            $sql .= " OR nom IN (".sousCategorie($donnes['nom']).")";
+        }
+        return $sql;
+    }
     ?>
 
         <h2>Choisissez un filtre pour vos boisson</h2><br>
@@ -217,6 +264,7 @@ session_start();
             //Si c'est le premier chargement la catégorie courante est Aliment
             if(!isset($_SESSION['categorieCourante'])) {
             $_SESSION['categorieCourante'] = 'Aliment';
+            $_SESSION['supCategorie']['Aliment'] = 1;
             $superCat = $bdd->query("SELECT DISTINCT nom FROM SuperCategorie WHERE nomSuper = 'Aliment'");
             while ($donnees = $superCat->fetch()) {
                 $nomCat = $donnees['nom'];
@@ -231,7 +279,10 @@ session_start();
             else{
                 if(isset($_SESSION['supCategorie'])){
                     foreach ($_SESSION['supCategorie'] as $cat => $val){
-                        echo "<button class='boutonCat'>$cat</button><br><br>";
+                        if($cat != 'Aliment' && $val==1) {
+                            $cat = str_replace("'", "\'", $cat);
+                            echo "<button class='boutonCat' onclick=\"backLead('$cat')\">$cat</button><br><br>";
+                        }
                     }
                 }
                 $superCat = $bdd->prepare("SELECT DISTINCT nom FROM SuperCategorie WHERE nomSuper = :super");
@@ -247,152 +298,137 @@ session_start();
     <?php
     }
 
-
-    /*$sql = "SELECT nom FROM SuperCategorie WHERE nomSuper = '".$_SESSION['categorieCourante']."'";
-    $categorie = $bdd->query($sql);
-    $sousCatPossible = 1;
-    $sqlAdd = "";
-    $cpt = 0;
-    while($sousCatPossible == 1) {
-        $cpt++;
-        echo $cpt."<br><br>";
-        echo $sql."<br><br>";
-        if ($donnees = $categorie->fetch()) {
-            $sql = $sql.$sqlAdd;
-            $sqlAdd = " OR nomSuper IN (" . $sql . ")";
-            $categorie = $bdd->query($sql.$sqlAdd);
-        }
-        else{
-            $sousCatPossible = 0;
-        }
-    }
-    echo $sql;*/
-
     // On récupère tout le contenu de la table recettes
-    $recettes = $bdd->query('SELECT * FROM Recettes');
 
-    // On affiche chaque entrée une à une
-    while ($donnees = $recettes->fetch()) {
-        ?>
-        <div id="page" class="container">
-        <div class="boxA">
-        <h2><?php echo $donnees['nom']; ?></h2>
-        <p><strong>Ingredients : </strong><?php foreach (explode('|', $donnees['ingredients']) as $ing) {
-            echo $ing . ", ";
-        } ?><br/>
-        <strong>Préparation : </strong><?php echo $donnees['preparation'] ?><br/>
-        <?php
-        $nom = str_replace_accent_espace($donnees['nom']);
-        $dirImage = "../Projet/Photos/";
-        if (is_dir($dirImage)) {
-            if ($openedDir = opendir($dirImage)) {
-                while (($file = readdir($openedDir)) !== false) {
-                    if (strcasecmp($nom . ".jpg", $file) == 0) {
-                        ?><img src="../Projet/Photos/<?php echo $nom . ".jpg" ?>" height="200" alt="" />
-                        <?php
-                    }
-                }
-                ?>
-                </p>
-                </div>
-                <div class="boxB">
-                <?php
-                $nomCocktail = $donnees['nom'];
-                $nomCocktailPhoto = $donnees['nom'];
-                $nomCocktailPhoto = str_replace_accent_espace($nomCocktailPhoto);
-                $recettecocktail = $donnees['ingredients'];
-                $recettecocktail = str_replace_accent_espace($recettecocktail);
-                $dansPanier = 0;
+    $listeRecettes = $bdd->query("SELECT DISTINCT nomRecette FROM Recettes JOIN Liaison ON Liaison.nomRecette = Recettes.nom WHERE nomIngredient IN (".sousCategorie($_SESSION['categorieCourante']).")");
+    while($nomRecette = $listeRecettes->fetch()){
+        $recettes = $bdd->prepare("SELECT * FROM Recettes WHERE nom = :nom");
+        $recettes->bindParam(":nom", $nomRecette['nomRecette']);
+        $recettes->execute();
 
-                //Gestion du panier
-
-                //Si l'utilisateur est connecté
-                if(isset($_SESSION['login'])){
-
-                    //On ajoute les cocktails déjà sélectionnés hors connexion
-                    if(isset($_SESSION['panier'])){
-                        foreach ($_SESSION['panier'] as $cocktailCookie=>$elem){
-                            $panier = $bdd->prepare("INSERT INTO Panier(utilisateur, nomRecette) VALUES (:utilisateur, :recette)");
-                            $panier->bindParam(":utilisateur", $_SESSION['login']);
-                            $panier->bindParam(":recette", $cocktailCookie);
-                            $panier->execute();
+        // On affiche chaque entrée une à une
+        while ($donnees = $recettes->fetch()) {
+            ?>
+            <div id="page" class="container">
+            <div class="boxA">
+            <h2><?php echo $donnees['nom']; ?></h2>
+            <p><strong>Ingredients : </strong><?php foreach (explode('|', $donnees['ingredients']) as $ing) {
+                echo $ing . ", ";
+            } ?><br/>
+            <strong>Préparation : </strong><?php echo $donnees['preparation'] ?><br/>
+            <?php
+            $nom = str_replace_accent_espace($donnees['nom']);
+            $dirImage = "../Projet/Photos/";
+            if (is_dir($dirImage)) {
+                if ($openedDir = opendir($dirImage)) {
+                    while (($file = readdir($openedDir)) !== false) {
+                        if (strcasecmp($nom . ".jpg", $file) == 0) {
+                            ?><img src="../Projet/Photos/<?php echo $nom . ".jpg" ?>" height="200" alt="" />
+                            <?php
                         }
                     }
+                    ?>
+                    </p>
+                    </div>
+                    <div class="boxB">
+                    <?php
+                    $nomCocktail = $donnees['nom'];
+                    $nomCocktailPhoto = $donnees['nom'];
+                    $nomCocktailPhoto = str_replace_accent_espace($nomCocktailPhoto);
+                    $recettecocktail = $donnees['ingredients'];
+                    $recettecocktail = str_replace_accent_espace($recettecocktail);
+                    $dansPanier = 0;
+
+                    //Gestion du panier
 
                     //Si l'utilisateur est connecté
-                    //On regarde toutes les recettes dans son panier
-                    $panier = $bdd->prepare("SELECT * FROM Panier WHERE utilisateur = :utilisateur");
-                    $panier->bindParam(":utilisateur", $_SESSION['login']);
-                    $panier->execute();
-                    $dansPanier = 0;
-                    while($elementDansPanier = $panier->fetch()){
-                        if($elementDansPanier['nomRecette'] == $nomCocktail) {
-                            $dansPanier = 1;
-                        }
-                    }
-                    //Si la recette en cours est dans son panier
-                    if($dansPanier == 0) {
-                        ?>
-                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés</button>
-                        </div>
-                        <?php
-                    }
+                    if(isset($_SESSION['login'])){
 
-                    //Si la recette en cours n'est pas dans son panier
-                    else{
-                        ?>
-                            <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Supprimer de mes cocktails préférés</button>
-                    </div>
-                    <?php
-                    }
-                }
-
-                //Si l'utilisateur n'est pas connecté
-                else{
-
-                    //Si on a déjà une variable session qui est associée au cocktail en cours
-                    if(isset($_SESSION['panier'][$nomCocktail])){
-
-                    //Si il est dans les coktails favoris
-                    if($_SESSION['panier'][$nomCocktail] == 1){
-                    $nomCocktail = str_replace("'", "\'", $nomCocktail);
-                    ?>
-                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"suppCookie('$nomCocktail')\""?>>Supprimer de mes cocktails préférés</button>
-                        </div>
-                        <?php
+                        //On ajoute les cocktails déjà sélectionnés hors connexion
+                        if(isset($_SESSION['panier'])){
+                            foreach ($_SESSION['panier'] as $cocktailCookie=>$elem){
+                                $panier = $bdd->prepare("INSERT INTO Panier(utilisateur, nomRecette) VALUES (:utilisateur, :recette)");
+                                $panier->bindParam(":utilisateur", $_SESSION['login']);
+                                $panier->bindParam(":recette", $cocktailCookie);
+                                $panier->execute();
+                            }
                         }
 
-                        //Si il n'est pas dans les coktails favoris
+                        //Si l'utilisateur est connecté
+                        //On regarde toutes les recettes dans son panier
+                        $panier = $bdd->prepare("SELECT * FROM Panier WHERE utilisateur = :utilisateur");
+                        $panier->bindParam(":utilisateur", $_SESSION['login']);
+                        $panier->execute();
+                        $dansPanier = 0;
+                        while($elementDansPanier = $panier->fetch()){
+                            if($elementDansPanier['nomRecette'] == $nomCocktail) {
+                                $dansPanier = 1;
+                            }
+                        }
+                        //Si la recette en cours est dans son panier
+                        if($dansPanier == 0) {
+                            ?>
+                                <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"ajoutRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Ajouter à mes cocktails préférés</button>
+                            </div>
+                            <?php
+                        }
+
+                        //Si la recette en cours n'est pas dans son panier
                         else{
-                        $nomCocktail = str_replace("'", "\'", $nomCocktail);
-                        ?>
-                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
+                            ?>
+                                <button class="button" name="<?= $nomCocktail;?>" <?="onclick=\"suppRecette('".$_SESSION['login']."', '".$nomCocktail."')\"" ;?>>Supprimer de mes cocktails préférés</button>
                         </div>
                         <?php
                         }
-
                     }
 
-                    //Si on n'a pas déjà une variable session qui est associée au cocktail en cours
+                    //Si l'utilisateur n'est pas connecté
                     else{
+
+                        //Si on a déjà une variable session qui est associée au cocktail en cours
+                        if(isset($_SESSION['panier'][$nomCocktail])){
+
+                        //Si il est dans les coktails favoris
+                        if($_SESSION['panier'][$nomCocktail] == 1){
                         $nomCocktail = str_replace("'", "\'", $nomCocktail);
                         ?>
-                        <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
-                        </div>
-                        <?php
+                                <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"suppCookie('$nomCocktail')\""?>>Supprimer de mes cocktails préférés</button>
+                            </div>
+                            <?php
+                            }
+
+                            //Si il n'est pas dans les coktails favoris
+                            else{
+                            $nomCocktail = str_replace("'", "\'", $nomCocktail);
+                            ?>
+                                <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
+                            </div>
+                            <?php
+                            }
+
+                        }
+
+                        //Si on n'a pas déjà une variable session qui est associée au cocktail en cours
+                        else{
+                            $nomCocktail = str_replace("'", "\'", $nomCocktail);
+                            ?>
+                            <button class="button" name="<?=$nomCocktail;?>" <?="onclick=\"addCookie('$nomCocktail')\""?>>Ajouter à mes cocktails préférés</button>
+                            </div>
+                            <?php
+                        }
                     }
+
+                }?>
+
+                </div>
+                <?php
+            }
+        }
+                $recettes->closeCursor(); // Termine le traitement de la requête
                 }
 
-            }?>
 
-            </div>
-            <?php
-        }
-    }
-
-    $recettes->closeCursor(); // Termine le traitement de la requête
-
-    ?>
+                ?>
   </div>
   </div>
 </body>
