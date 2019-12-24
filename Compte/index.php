@@ -48,7 +48,6 @@ session_start();
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="#" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
-				<li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>
 	</div>
@@ -252,11 +251,13 @@ session_start();
 					// On affiche les informations du compte de l'utilisateur
 					?>
 					<p>Email : <?php echo $donnees['login']; ?> </p>
-					<p>Nom : <?php echo $donnees['nom']; ?> </p>
-					<p>Prenom : <?php echo $donnees['prenom']; ?> </p>
+					<p>Nom : <?php if($donnees['nom'] != "null") echo $donnees['nom']; ?> </p>
+					<p>Prenom : <?php if($donnees['prenom'] != "null") echo $donnees['prenom']; ?> </p>
 					<p>Sexe : <?php echo $donnees['sexe']; ?> </p>
-					<p>Adresse : <br><?= $donnees['adresse'].' '.$donnees['postal'].' '.$donnees['ville']; ?></p>
-					<p>N° de téléphone : <?php echo $donnees['noTelephone']; ?> </p>
+					<p>Adresse : <br><?php if($donnees['adresse'] != "null")echo $donnees['adresse'];
+                        if($donnees['postal'] != 0)echo ' '.$donnees['postal'];
+                        if($donnees['ville'] != "null")echo ' '.$donnees['ville']; ?></p>
+					<p>N° de téléphone : <?php if($donnees['noTelephone'] != 0) echo $donnees['noTelephone']; ?> </p>
 					<p><input name = "modification" type="submit" value="Modifier Informations"></p>
 					<?php
 				}
@@ -268,7 +269,7 @@ session_start();
 			<form class="" action="#" method="post">
 				<p>Email : <?php echo $_SESSION['login']; ?> </p>
 				<?php if (isset($_POST["suppression"])){
-					// On supprime k'utilisateur de la base de données si le bouton de suppression a été pressé
+					// On supprime l'utilisateur de la base de données si le bouton de suppression a été pressé
 					$requete = $bdd->prepare("DELETE FROM Utilisateur WHERE login = :login");
 					$login = $_SESSION['login'];
 					$requete->bindParam('login', $login);
@@ -281,6 +282,17 @@ session_start();
 				<br>
 				<p><input name = "suppression" type="submit" value="Supprimer le compte"></p>
 			</form>
+            <h3>Mes recettes favorites</h3>
+            <ul>
+            <?php
+            $panier = $bdd->prepare("SELECT nomRecette FROM Panier WHERE utilisateur = :utilisateur");
+            $panier->bindParam(":utilisateur", $_SESSION['login']);
+            $panier->execute();
+            while($recette = $panier->fetch()){
+                echo "<li>".$recette['nomRecette']."</li>";
+            }
+            ?>
+            </ul>
 		</div>
 	</div>
 </div>

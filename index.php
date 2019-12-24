@@ -44,7 +44,6 @@ session_start();
 				<?php if (isset($_SESSION['login'])){ ?>
 				<li><a href="Compte/" accesskey="4" title="">Mon compte</a></li>
 				<?php } ?>
-				<li><a href="./A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
 			</ul>
 		</div>
 	</div>

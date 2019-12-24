@@ -35,7 +35,6 @@ unset($_SESSION);
                 <li class="active"><a href="../kakuteru" accesskey="1" title="">Accueil</a></li>
                 <li><a href="../Cocktails/" accesskey="2" title="">Nos cocktails</a></li>
                 <li><a href="../Recettes/" accesskey="3" title="">Nos recettes</a></li>
-                <li><a href="../A_Propos/a_propos.php" accesskey="5" title="">A propos de nous</a></li>
             </ul>
         </div>
     </div>
